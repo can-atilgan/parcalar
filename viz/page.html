@@ -280,9 +280,13 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
           <ul class="flags" data-i18n="flags"></ul>
         </div>
       </div>
+      <div class="tabs" role="tablist" data-i18n-aria="dtabs_aria">
+        <button class="tab" role="tab" id="dtab-bench" aria-controls="grid" aria-selected="true"><span data-i18n="dtab_bench"></span></button>
+        <button class="tab" role="tab" id="dtab-meb" aria-controls="grid" aria-selected="false" tabindex="-1"><span data-i18n="dtab_meb"></span></button>
+      </div>
       <div class="scale"><span data-i18n="scale_a"></span><span class="bar"></span><span data-i18n="scale_b"></span></div>
       <div class="table-wrap"><table class="grid" id="grid" data-i18n-aria="grid_aria"></table></div>
-      <div class="notes" data-i18n="notes"></div>
+      <div class="notes" id="notes"></div>
     </div>
   </details>
 </main>
@@ -294,6 +298,9 @@ const SIM = (function () {
 return { serial, parallel, EDGES, N };
 })();
 const RESULTS = /* @@RESULTS@@ */ [];
+const RESULTS_MEB = /* @@RESULTS_MEB@@ */ [];
+const DATA = { bench: RESULTS, meb: RESULTS_MEB };
+let dataset = "bench";
 
 /* ---------------- text ---------------- */
 const fmt = a => "{" + a.join(", ") + "}";
@@ -370,7 +377,8 @@ const I18N = {
     passend: p => p.changed ? `Geçiş ${p.pass} bitti ama (F, Y) değişti. Önceki başlangıç düğümleri eski değerle tarandığı için yeni bir geçiş gerekiyor.` : `<b>Geçiş ${p.pass} hiç değişmeden bitti.</b> Her başlangıç düğümü aynı (F, Y) = (${p.F}, ${p.Y}) ile tarandı ve hiçbiri daha iyisini vermedi: bu, optimallik ispatı.`,
     done: p => `Sonuç: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. ${p.S.join(", ")} parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor.`,
     t_h: "Güncel testler",
-    sum: (k, p) => `AMD Ryzen 7 7800X3D · 16 çekirdek · ${k}/88 dosya koşuldu, ${p} ispatlı`,
+    sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 çekirdek · üretilen graflar ${b}/88, MEBtest ${m}/88 dosya`,
+    dtabs_aria: "Test grafları", dtab_bench: "Üretilen graflar (bench/)", dtab_meb: "MEBtest (hocanın grafları)",
     env: `<dt>İşlemci</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 fiziksel çekirdek, 16 mantıksal (SMT)</span></dd>
       <dt>Koşu</dt><dd><b>16 çekirdek</b>: 16 iş parçacığı (<code>OMP_NUM_THREADS=16</code>), tüm mantıksal çekirdekler</dd>
       <dt>Sınır</dt><dd>Dosya başına 600 sn (<code>-t 600</code>). Dosyalar tek tek, sırayla koşuldu.</dd>
@@ -384,9 +392,11 @@ const I18N = {
       <li><code>-static</code> DLL bağımlılığı olmayan tek bir .exe üretir.</li>`,
     scale_a: "hücre rengi: süre", scale_b: "0.04 sn → 240 sn (log)",
     grid_aria: "Güncel test sonuçları, 16 çekirdek",
-    notes: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (okuma + arama + çıktı yazma + öz-kontrol). Koşulan her dosyada optimallik ispatlandı. <b>—</b> bu turda koşulmayan dosya.</p>
-      <p>Test grafları rastgele G(n, p): dosya adı n ve kenar yüzdesi (ör. 14030 → n = 140, %30). Seyreklik arttıkça arama ağacı büyüyor. Koşulmayanlar en seyrek graflar.</p>
+    notes_common: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (okuma + arama + çıktı yazma + öz-kontrol). <b>*</b> 600 sn sınırında ispatlanamadı. <b>—</b> bu turda koşulmayan dosya.</p>`,
+    notes_bench: `<p>Bu graflar bu çalışma için üretilen rastgele G(n, p) graflarıdır (<code>bench/</code>): dosya adı n ve kenar yüzdesini verir (ör. 14030 → n = 140, %30). Seyreklik arttıkça arama ağacı büyüyor; koşulmayanlar en seyrek graflar.</p>
       <p>Bağımsız doğrulama (<code>tools/verify.py</code>) bu tabloda yer almıyor, ayrıca yapılacak.</p>`,
+    notes_meb: `<p>Bu graflar hocanın 2014 tarihli test graflarıdır (<code>MEBtest/</code>). Aynı adlı <code>bench/</code> graflarından farklıdırlar ve iç içedirler: her yoğunluk, bir altındakinin bütün kenarlarını içerir. Koşulan dosyalar <code>bench/</code> sekmesindekilerle aynı.</p>
+      <p>10050'nin sonucu (Z = 91) dört bağımsız kesin çözücü ve sezgisel çözücüyle ayrıca doğrulandı. Koşulan her dosya ispatlandı ve bütün çıktılar <code>tools/verify.py</code> ile kontrol edildi.</p>`,
     th_light: "Açık", th_dark: "Koyu",
     sec: "sn", na: f => `${f}.txt bu turda koşulmadı`, proven: "ispatlı", unproven: "ispatsız",
   },
@@ -462,7 +472,8 @@ const I18N = {
     passend: p => p.changed ? `Pass ${p.pass} is over but (F, Y) changed. Earlier start vertices were scanned with the old value, so another pass is needed.` : `<b>Pass ${p.pass} finished without any change.</b> Every start vertex was scanned with the same (F, Y) = (${p.F}, ${p.Y}) and none did better: that is the proof of optimality.`,
     done: p => `Result: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. Wiping ${p.S.join(", ")} splits the network into {1, 2, 6} and {3, 4, 5}.`,
     t_h: "Current tests",
-    sum: (k, p) => `AMD Ryzen 7 7800X3D · 16 cores · ${k}/88 files run, ${p} proven optimal`,
+    sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 cores · generated graphs ${b}/88, MEBtest ${m}/88 files`,
+    dtabs_aria: "Test graphs", dtab_bench: "Generated graphs (bench/)", dtab_meb: "MEBtest (instructor's graphs)",
     env: `<dt>CPU</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 physical cores, 16 logical (SMT)</span></dd>
       <dt>Run</dt><dd><b>16 cores</b>: 16 threads (<code>OMP_NUM_THREADS=16</code>), all logical cores</dd>
       <dt>Limit</dt><dd>600 s per file (<code>-t 600</code>). Files were run one at a time.</dd>
@@ -476,9 +487,11 @@ const I18N = {
       <li><code>-static</code> produces a single .exe with no DLL dependencies.</li>`,
     scale_a: "cell colour: time", scale_b: "0.04 s → 240 s (log)",
     grid_aria: "Current test results, 16 cores",
-    notes: `<p>Cell: <b>Z/X</b> and the time measured by the program (read + search + output + self-check). Every file that was run was proven optimal. <b>—</b> marks a file not run in this round.</p>
-      <p>The test graphs are random G(n, p): the file name gives n and the edge percentage (e.g. 14030 → n = 140, 30%). The sparser the graph, the larger the search tree. The files not run are the sparsest ones.</p>
+    notes_common: `<p>Cell: <b>Z/X</b> and the time measured by the program (read + search + output + self-check). <b>*</b> not proven within the 600 s limit. <b>—</b> marks a file not run in this round.</p>`,
+    notes_bench: `<p>These are random G(n, p) graphs generated for this study (<code>bench/</code>): the file name gives n and the edge percentage (e.g. 14030 → n = 140, 30%). The sparser the graph, the larger the search tree; the files not run are the sparsest ones.</p>
       <p>Independent verification (<code>tools/verify.py</code>) is not part of this table and will be done separately.</p>`,
+    notes_meb: `<p>These are the instructor's test graphs from 2014 (<code>MEBtest/</code>). They differ from the <code>bench/</code> graphs with the same names and are nested: each density contains every edge of the one below it. The same files were run as in the <code>bench/</code> tab.</p>
+      <p>The result for 10050 (Z = 91) was also confirmed with four independent exact solvers and the heuristic. Every file that was run was proven optimal, and every output was checked with <code>tools/verify.py</code>.</p>`,
     th_light: "Light", th_dark: "Dark",
     sec: "s", na: f => `${f}.txt was not run in this round`, proven: "proven", unproven: "not proven",
   },
@@ -834,7 +847,8 @@ for (const k of ["seri", "paralel"]) {
 
 /* ---------------- results grid ---------------- */
 function renderGrid() {
-  const by = {}; for (const r of RESULTS) by[r[0]] = r;
+  const rows = DATA[dataset];
+  const by = {}; for (const r of rows) by[r[0]] = r;
   const pcts = [20, 30, 40, 50, 60, 70, 80, 90];
   const lo = Math.log10(0.04), hi = Math.log10(240);
   let html = `<thead><tr><th scope="col">n</th>${pcts.map(p => `<th scope="col">%${p}</th>`).join("")}</tr></thead><tbody>`;
@@ -845,14 +859,26 @@ function renderGrid() {
       if (!r) { html += `<td class="na" title="${t("na")(`${n}${p}`)}">—</td>`; continue; }
       const tm = r[5], k = Math.min(1, Math.max(0, (Math.log10(tm) - lo) / (hi - lo)));
       const heat = Math.round(k * 72);
-      html += `<td style="--heat:${heat}%" class="${heat > 40 ? "hot" : ""}" title="${r[0]}.txt · ${r[3] === "ispatli" ? t("proven") : t("unproven")}"><span class="zx">${r[1]}/${r[2]}</span><span class="t">${tm.toFixed(2)} ${t("sec")}</span></td>`;
+      html += `<td style="--heat:${heat}%" class="${heat > 40 ? "hot" : ""}" title="${r[0]}.txt · ${r[3] === "ispatli" ? t("proven") : t("unproven")}"><span class="zx">${r[1]}/${r[2]}${r[3] === "ispatli" ? "" : "*"}</span><span class="t">${tm.toFixed(2)} ${t("sec")}</span></td>`;
     }
     html += `</tr>`;
   }
   document.getElementById("grid").innerHTML = html + "</tbody>";
-  document.getElementById("sum-note").textContent = t("sum")(RESULTS.length, RESULTS.filter(r => r[3] === "ispatli").length);
+  document.getElementById("sum-note").textContent = t("sum")(RESULTS.length, RESULTS_MEB.length);
+  document.getElementById("notes").innerHTML = t("notes_common") + t("notes_" + dataset);
+  for (const k of ["bench", "meb"]) {
+    const b = document.getElementById("dtab-" + k), on = k === dataset;
+    b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
+  }
 }
 renderGrid();
+for (const k of ["bench", "meb"]) {
+  const b = document.getElementById("dtab-" + k);
+  b.addEventListener("click", () => { dataset = k; renderGrid(); });
+  b.addEventListener("keydown", ev => {
+    if (ev.key === "ArrowRight" || ev.key === "ArrowLeft") { ev.preventDefault(); dataset = k === "bench" ? "meb" : "bench"; renderGrid(); document.getElementById("dtab-" + dataset).focus(); }
+  });
+}
 
 function setLang(l) {
   if (l === lang) return;
