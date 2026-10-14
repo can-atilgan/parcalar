@@ -1,13 +1,14 @@
-# gen_results_md.py [MODE]  (MODE = 16-cekirdek | tek-cekirdek)
-# Writes results/AMD_Ryzen_7_7800X3D/<MODE>/SONUCLAR.md from that folder's ham.tsv.
+# gen_results_md.py [MODE] [DIR]  (MODE = 16-cekirdek | tek-cekirdek)
+# Writes DIR/SONUCLAR.md from DIR/ham.tsv (default DIR: results/AMD_Ryzen_7_7800X3D/<MODE>).
 import os, sys
 MODE = sys.argv[1] if len(sys.argv) > 1 else '16-cekirdek'
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
-D = f'{ROOT}/results/AMD_Ryzen_7_7800X3D/{MODE}'
+D = sys.argv[2] if len(sys.argv) > 2 else f'{ROOT}/results/AMD_Ryzen_7_7800X3D/{MODE}'
+BENCHDIR = os.environ.get('BENCH', f'{ROOT}/bench')
 t = {}
 for l in open(f'{D}/ham.tsv', encoding='utf-8').read().splitlines()[1:]:
     p = l.split('\t'); t[p[0]] = p
-files = sorted(f[:-4] for f in os.listdir(f'{ROOT}/bench') if f.endswith('.txt'))
+files = sorted(f[:-4] for f in os.listdir(BENCHDIR) if f.endswith('.txt'))
 done = [f for f in files if f in t]; skip = [f for f in files if f not in t]
 prov = sum(1 for f in done if t[f][3] == 'ispatli')
 if MODE == '16-cekirdek':

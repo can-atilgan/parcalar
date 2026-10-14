@@ -3,17 +3,19 @@
 # Runs every bench/*.txt with SOLVER -t 600, one file at a time, and appends one TSV row per
 # file to OUT_DIR/ham.tsv (file Z X status solver_s wall_s). Program output goes to
 # OUT_DIR/ciktilar/<file>.out|.err. Files already in ham.tsv are skipped, so a run can resume.
-# Optional env: SKIP=<bash regex on the file name>, e.g. SKIP='20$' skips the 20% graphs.
+# Optional env: SKIP=<bash regex on the file name>, e.g. SKIP='20$' skips the 20% graphs;
+#               BENCH=<graph folder> (default: bench/).
 # Used for results/AMD_Ryzen_7_7800X3D (Git Bash on Windows, gcc from WinLibs):
 #   gcc -O2 -march=native -Wa,-muse-unaligned-vector-move -fopenmp -static final/parcalar.c -o parcalar_omp.exe
 #   tools/windows/run_bench.sh ./parcalar_omp.exe results/AMD_Ryzen_7_7800X3D/16-cekirdek 16
 B=$1; D=$2; THREADS=${3:-}
 R=$(cd "$(dirname "$0")/../.." && pwd)
+BENCH=${BENCH:-$R/bench}
 [ -n "$THREADS" ] && export OMP_NUM_THREADS=$THREADS
 OUT=$D/ciktilar; TSV=$D/ham.tsv
 mkdir -p "$OUT"
 [ -f "$TSV" ] || printf "dosya\tZ\tX\tdurum\tsure_sn\tduvar_sn\n" > "$TSV"
-for F in $(ls "$R"/bench/*.txt | sort); do
+for F in $(ls "$BENCH"/*.txt | sort); do
   f=$(basename "$F" .txt)
   grep -q "^$f	" "$TSV" && continue
   [ -n "$SKIP" ] && [[ $f =~ $SKIP ]] && continue
