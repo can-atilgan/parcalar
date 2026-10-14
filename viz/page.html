@@ -70,6 +70,7 @@ code, .mono { font-family: var(--mono); font-size: 0.9em; }
 .refs { margin: 4px 0 0; padding: 12px 0 0 1.6em; border-top: 1px solid var(--line); display: grid; gap: 6px; font-size: 0.8rem; color: var(--muted); }
 .refs li { padding-left: 2px; }
 .refs li:target { color: var(--ink); }
+.refs-note { font-size: 0.8rem; color: var(--muted); margin: 0; padding-left: 0.2em; }
 .refs .rt { display: inline-block; font: 600 0.68rem var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 6px; margin-right: 8px; vertical-align: 0.1em; }
 .refs .rn { display: block; font-size: 0.95em; opacity: 0.85; }
 .tag-np { display: inline-block; font-family: var(--mono); font-size: 0.78rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; padding: 1px 9px; }
@@ -241,6 +242,7 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
       <p data-i18n="p2"></p>
       <p data-i18n="p3"></p>
       <ol class="refs" data-i18n="refs"></ol>
+      <p class="refs-note" data-i18n="refs_note"></p>
     </div>
     <figure>
       <svg id="fig-problem" viewBox="0 0 300 200" role="img" data-i18n-aria="fig_aria"></svg>
@@ -307,6 +309,7 @@ const I18N = {
       <li id="ref-3"><span class="rt">Temel sınırlar</span>W. Goddard, H. C. Swart. <i>Integrity in graphs: bounds and basics.</i> J. Combin. Math. Combin. Comput. 7 (1990) 139–151. <span class="rn">Bütünlüğün temel sınırları ve özellikleri. [5], çözücümüzün de kullandığı yeniden yazımı bu çalışmaya dayandırıyor.</span></li>
       <li id="ref-4"><span class="rt">Parametreli karmaşıklık</span>P. G. Drange, M. S. Dregi, P. van 't Hof. <i>On the computational complexity of vertex integrity and component order connectivity.</i> Algorithmica (2016). <a href="https://arxiv.org/abs/1403.6331" target="_blank" rel="noopener">arXiv:1403.6331</a> <span class="rn">Cevap p küçükken hızlı kesin algoritma (O(p<sup>p+1</sup>·n)) ve p³ düğümlü çekirdek.</span></li>
       <li id="ref-5"><span class="rt">Kesin algoritma</span>S. Das, S. Das, S. S. Islam, R. M. Mitra, A. Mohapatra, A. Paul. <i>Solving vertex integrity faster than 2<sup>n</sup>.</i> arXiv (2026). <a href="https://arxiv.org/abs/2609.33779" target="_blank" rel="noopener">arXiv:2609.33779</a> <span class="rn">O(1.9602<sup>n</sup>) süreli kesin algoritma ve ETH altında 2<sup>o(n)</sup> alt sınırı. Kuramsal, uygulama ya da deney içermiyor. Z = n − max |U| yeniden yazımını kullanıyor.</span></li>`,
+    refs_note: `Çözücünün yeniden yazımı [3] ve [5] ile aynı. Aramanın kendisi ise, yani en büyük parçanın başlangıç düğümünden kurulması, P bölgesiyle budama ve hiçbir şey değişmeyene kadar tekrarlanan geçişler, bu kaynaklardaki bir yöntemle doğrudan eşleşmiyor. Literatürü sistematik olarak taramadık; benzer bir yöntem olabilir, biz rastlamadık.`,
     fig_aria: "Ödevdeki 7 bilgisayarlık örnek ağ: 7 numaralı bilgisayar parçalanınca ağ {1,2,6} ve {3,4,5} diye iki parçaya ayrılıyor.",
     fig_cap: "Ödevdeki örnek (n = 7). 7 parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor: X = 1, Y = 3, <b>Z = 4</b>. Daha iyisi yok.",
     a_h: "Algoritma",
@@ -397,6 +400,7 @@ const I18N = {
       <li id="ref-3"><span class="rt">Basic bounds</span>W. Goddard, H. C. Swart. <i>Integrity in graphs: bounds and basics.</i> J. Combin. Math. Combin. Comput. 7 (1990) 139–151. <span class="rn">Basic bounds and properties of integrity. [5] credits this work for the reformulation our solver also uses.</span></li>
       <li id="ref-4"><span class="rt">Parameterised complexity</span>P. G. Drange, M. S. Dregi, P. van 't Hof. <i>On the computational complexity of vertex integrity and component order connectivity.</i> Algorithmica (2016). <a href="https://arxiv.org/abs/1403.6331" target="_blank" rel="noopener">arXiv:1403.6331</a> <span class="rn">A fast exact algorithm when the answer p is small (O(p<sup>p+1</sup>·n)) and a kernel with p³ vertices.</span></li>
       <li id="ref-5"><span class="rt">Exact algorithm</span>S. Das, S. Das, S. S. Islam, R. M. Mitra, A. Mohapatra, A. Paul. <i>Solving vertex integrity faster than 2<sup>n</sup>.</i> arXiv (2026). <a href="https://arxiv.org/abs/2609.33779" target="_blank" rel="noopener">arXiv:2609.33779</a> <span class="rn">An O(1.9602<sup>n</sup>)-time exact algorithm and a 2<sup>o(n)</sup> lower bound under ETH. Theoretical, with no implementation or experiments. Uses the Z = n − max |U| reformulation.</span></li>`,
+    refs_note: `The solver's reformulation is the same as in [3] and [5]. The search itself (building the largest part from its start vertex, pruning with the region P, repeating passes until nothing changes) does not directly match a method in these sources. We have not surveyed the literature systematically, so a similar method may exist that we have not seen.`,
     fig_aria: "The 7-computer example network from the assignment: wiping computer 7 splits it into {1,2,6} and {3,4,5}.",
     fig_cap: "The assignment's example (n = 7). Wiping 7 splits the network into {1, 2, 6} and {3, 4, 5}: X = 1, Y = 3, <b>Z = 4</b>. Nothing does better.",
     a_h: "The algorithm",
