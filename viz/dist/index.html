@@ -616,7 +616,7 @@ const I18N = {
 let lang = "tr";
 try { const s = localStorage.getItem("parcalar-lang"); if (s === "tr" || s === "en") lang = s; else if (!/^tr/i.test(navigator.language || "")) lang = "en"; } catch (e) { if (!/^tr/i.test(navigator.language || "")) lang = "en"; }
 const t = k => I18N[lang][k];
-let theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+let theme = "light";
 try { const s = localStorage.getItem("parcalar-theme"); if (s === "light" || s === "dark") theme = s; } catch (e) {}
 function applyTheme() { document.documentElement.setAttribute("data-theme", theme); }
 applyTheme();
