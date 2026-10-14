@@ -300,8 +300,8 @@ const I18N = {
       `  (F, Y) ← yerel aramayla iyileştir  <span class="cm">// demoda atlandı</span>`,
       `  <span class="kw">tekrarla</span>  <span class="cm">// bir geçiş</span>`,
       `    değişti ← hayır`,
-      `    <span class="kw">her</span> çapa c = 1 … n <span class="kw">için</span>:<span class="badge par">paralel çağrı</span>`,
-      `      <span class="kw">her</span> bağlı C1 <span class="kw">için</span> (en küçük köşesi c):`,
+      `    <span class="kw">her</span> başlangıç düğümü c = 1 … n <span class="kw">için</span>:<span class="badge par">paralel çağrı</span>`,
+      `      <span class="kw">her</span> bağlı C1 <span class="kw">için</span> (en küçük düğümü c):`,
       `        P ← V ∖ N[C1]  <span class="cm">// C1'e değmeyen bölge</span>`,
       `        <span class="kw">eğer</span> |P| &lt; F: buda  <span class="cm">// dal iyileşemez</span>`,
       `        R ← P'de, parçaları ≤ |C1| olan en büyük küme`,
@@ -313,10 +313,11 @@ const I18N = {
     ],
     gloss: `<li><b>F</b> ayakta kalanlar − en büyük parça. Büyüdükçe Z = n − F küçülür.</li>
       <li><b>Y</b> en büyük parçanın boyu. Z eşitken büyük Y seçilir, X = Z − Y küçülür.</li>
-      <li><b>C1</b> ayakta kalan ağın en büyük parçası. Çapa c, onun en küçük numaralı köşesi.</li>
+      <li><b>C1</b> ayakta kalan ağın en büyük parçası.</li>
+      <li><b>c</b> başlangıç düğümü: C1'in en küçük numaralı düğümü. Her C1 tam bir kez, kendi başlangıç düğümünden kurulur.</li>
       <li><b>N[C1]</b> C1 ve komşuları. C1 en büyük parça kalacaksa bunlara dokunulamaz.</li>
       <li><b>R</b> C1'in yanında ayakta kalabilecek diğer bilgisayarlar. <b>Y′</b>: R'ye değmeyen en büyük parça.</li>
-      <li><b>paralel çağrı</b> çapalar birbirinden bağımsız, iş parçacıklarına dağıtılır. <b>kritik bölge</b> ortak en iyi değer kilitli güncellenir.</li>`,
+      <li><b>paralel çağrı</b> başlangıç düğümleri birbirinden bağımsız, iş parçacıklarına dağıtılır. <b>kritik bölge</b> ortak en iyi değer kilitli güncellenir.</li>`,
     tabs_aria: "Arama modu",
     tab_s: "Seri", tab_p: "Paralel",
     sub_s: n => `· ${n} adım`, sub_p: n => `· 3 iş parçacığı · ${n} adım`,
@@ -326,23 +327,23 @@ const I18N = {
     legend: `<span><i class="sw c1"></i>C1</span><span><i class="sw nb"></i>N[C1] ∖ C1: kullanılamaz</span><span><i class="sw reg"></i>P bölgesi</span><span><i class="sw r"></i>R</span><span><i class="sw s"></i>parçalanan</span>`,
     tree_h: "Arama ağacı",
     tree_hint: `soluk: henüz ziyaret edilmedi · <i class="sw box pr"></i> budandı · <i class="sw box ck"></i> R denendi · <i class="sw box im"></i> iyileşme`,
-    tree_aria: "Arama ağacı: geçişler, çapalar ve denenen bağlı kümeler",
+    tree_aria: "Arama ağacı: geçişler, başlangıç düğümleri ve denenen bağlı kümeler",
     pass_label: p => `Geçiş ${p}`,
     wname: w => `İş parçacığı ${w}`, wsingle: "tek iş parçacığı", wshort: w => `İP ${w}`, copy: "kopya ",
     g_aria: w => w ? `İş parçacığı ${w} için ağ görünümü` : "Ağ görünümü",
-    intro: p => `Başlamak için <b>Oynat</b>'a ya da <b>Adım</b>'a basın. ${p.par ? "Paralel modda 3 iş parçacığı gösteriliyor (testlerde 16 kullanıldı); her biri boşa çıkınca sıradaki çapayı kapar." : "Seri modda tek iş parçacığı çapaları 1'den 7'ye sırayla tarar."}`,
+    intro: p => `Başlamak için <b>Oynat</b>'a ya da <b>Adım</b>'a basın. ${p.par ? "Paralel modda 3 iş parçacığı gösteriliyor (testlerde 16 kullanıldı); her biri boşa çıkınca sıradaki başlangıç düğümünü kapar." : "Seri modda tek iş parçacığı başlangıç düğümlerini 1'den 7'ye sırayla tarar."}`,
     start: p => `Başlangıç: en büyük bağımsız küme I = ${fmt(p.I)}, α = ${p.I.length}. Bundan F = ${p.F}, Y = ${p.Y} çıkıyor, yani Z = ${p.Z}. Arama bunu iyileştirmeye çalışacak.`,
-    pass: p => p.par ? `Geçiş ${p.pass} başlıyor. Her iş parçacığı ortak (F, Y) = (${p.F}, ${p.Y}) değerinin kendi kopyasını alıyor; geçiş boyunca bu kopyayla budayacak.` : `Geçiş ${p.pass} başlıyor: bütün çapalar (F, Y) = (${p.F}, ${p.Y}) ile taranacak.`,
-    anchor: p => `Çapa c = ${p.c}: en küçük köşesi ${p.c} olan bağlı kümeler sırayla kurulacak.`,
-    visit: p => `C1 = ${fmt(p.A)}${p.A.length === 1 ? " (çapanın kendisi)" : ""}.`,
+    pass: p => p.par ? `Geçiş ${p.pass} başlıyor. Her iş parçacığı ortak (F, Y) = (${p.F}, ${p.Y}) değerinin kendi kopyasını alıyor; geçiş boyunca bu kopyayla budayacak.` : `Geçiş ${p.pass} başlıyor: bütün başlangıç düğümleri (F, Y) = (${p.F}, ${p.Y}) ile taranacak.`,
+    anchor: p => `Başlangıç düğümü c = ${p.c}: en küçük düğümü ${p.c} olan bağlı kümeler sırayla kurulacak.`,
+    visit: p => `C1 = ${fmt(p.A)}${p.A.length === 1 ? " (başlangıç düğümünün kendisi)" : ""}.`,
     region: p => `P = V ∖ N[C1] = ${fmt(p.P)}, |P| = ${p.P.length}. C1'in komşuları ${fmt(p.nb)} kullanılamaz.`,
     prune: p => `|P| = ${p.P} &lt; F = ${p.F}: budandı. C1'i büyütmek P'yi yalnızca küçültür, bu dalın hiçbir uzantısı iyileşme veremez.`,
     check: p => `P içinde parçaları ≤ ${p.k} olan en büyük R = ${fmt(p.R)}: |R| = ${p.f}, Y′ = ${p.y}. ${p.better ? `<b>Mevcut (${p.F}, ${p.Y}) değerinden iyi!</b>` : `(${p.F}, ${p.Y}) değerinden iyi değil.`}`,
     improve_s: p => `Yeni en iyi: (F, Y) = (${p.F}, ${p.Y}), yani Z = ${p.Z}, X = ${p.X}.`,
     improve_p: p => `Kendi kopyasında (F, Y) = (${p.F}, ${p.Y}) buldu. Kritik bölgede ortak en iyiye bakıyor: ${p.g ? "<b>ortak en iyi güncellendi.</b>" : `ortak en iyi zaten (${p.gF}, ${p.gY}), değişmedi.`} Diğer iş parçacıkları bunu bu geçişte görmüyor.`,
-    restart: p => `Çapa c = ${p.c} yeni sınırla baştan taranıyor.`,
-    barrier: () => `Bariyer: bütün çapalar bitti, iş parçacıkları geçişin sonunda birbirini bekliyor.`,
-    passend: p => p.changed ? `Geçiş ${p.pass} bitti ama (F, Y) değişti. Önceki çapalar eski değerle tarandığı için yeni bir geçiş gerekiyor.` : `<b>Geçiş ${p.pass} hiç değişmeden bitti.</b> Her çapa aynı (F, Y) = (${p.F}, ${p.Y}) ile tarandı ve hiçbiri daha iyisini vermedi: bu, optimallik ispatı.`,
+    restart: p => `Başlangıç düğümü c = ${p.c} yeni sınırla baştan taranıyor.`,
+    barrier: () => `Bariyer: bütün başlangıç düğümleri bitti, iş parçacıkları geçişin sonunda birbirini bekliyor.`,
+    passend: p => p.changed ? `Geçiş ${p.pass} bitti ama (F, Y) değişti. Önceki başlangıç düğümleri eski değerle tarandığı için yeni bir geçiş gerekiyor.` : `<b>Geçiş ${p.pass} hiç değişmeden bitti.</b> Her başlangıç düğümü aynı (F, Y) = (${p.F}, ${p.Y}) ile tarandı ve hiçbiri daha iyisini vermedi: bu, optimallik ispatı.`,
     done: p => `Sonuç: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. ${p.S.join(", ")} parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor.`,
     t_h: "Güncel testler",
     sum: (k, p) => `AMD Ryzen 7 7800X3D · 16 çekirdek · ${k}/88 dosya koşuldu, ${p} ispatlı`,
@@ -355,7 +356,7 @@ const I18N = {
     flags: `<li><code>-O2</code> standart optimizasyon seviyesi. Bu kodda <code>-O3</code> ek hız getirmedi (34.4 sn'ye karşı 34.5 sn).</li>
       <li><code>-march=native</code> Zen 4'e özel komutlar: POPCNT, BMI, AVX-512. Tek çekirdekte düz <code>-O2</code>'ye göre yaklaşık 1.6 kat hızlı.</li>
       <li><code>-Wa,-muse-unaligned-vector-move</code> Windows'taki MinGW'de <code>-march=native</code> ile oluşan AVX stack hizalama çökmesini (GCC bug 54412) önler.</li>
-      <li><code>-fopenmp</code> çapaları iş parçacıklarına dağıtan paralel döngüyü açar.</li>
+      <li><code>-fopenmp</code> başlangıç düğümlerini iş parçacıklarına dağıtan paralel döngüyü açar.</li>
       <li><code>-static</code> DLL bağımlılığı olmayan tek bir .exe üretir.</li>`,
     scale_a: "hücre rengi: süre", scale_b: "0.04 sn → 240 sn (log)",
     grid_aria: "Güncel test sonuçları, 16 çekirdek",
@@ -383,7 +384,7 @@ const I18N = {
       `  (F, Y) ← improve by local search  <span class="cm">// skipped in the demo</span>`,
       `  <span class="kw">repeat</span>  <span class="cm">// one pass</span>`,
       `    changed ← no`,
-      `    <span class="kw">for each</span> anchor c = 1 … n:<span class="badge par">parallel call</span>`,
+      `    <span class="kw">for each</span> start vertex c = 1 … n:<span class="badge par">parallel call</span>`,
       `      <span class="kw">for each</span> connected C1 (smallest vertex c):`,
       `        P ← V ∖ N[C1]  <span class="cm">// region not touching C1</span>`,
       `        <span class="kw">if</span> |P| &lt; F: prune  <span class="cm">// branch cannot improve</span>`,
@@ -396,10 +397,11 @@ const I18N = {
     ],
     gloss: `<li><b>F</b> survivors − largest part. As it grows, Z = n − F shrinks.</li>
       <li><b>Y</b> size of the largest part. When Z ties, the larger Y wins, so X = Z − Y is smaller.</li>
-      <li><b>C1</b> the largest part of the surviving network. The anchor c is its smallest-numbered vertex.</li>
+      <li><b>C1</b> the largest part of the surviving network.</li>
+      <li><b>c</b> start vertex: the smallest-numbered vertex of C1. Each C1 is built exactly once, from its own start vertex.</li>
       <li><b>N[C1]</b> C1 and its neighbours. If C1 is to stay the largest part, these cannot be used.</li>
       <li><b>R</b> the other computers that can survive next to C1. <b>Y′</b>: the largest part not touching R.</li>
-      <li><b>parallel call</b> anchors are independent and are handed out to threads. <b>critical section</b> the shared best value is updated under a lock.</li>`,
+      <li><b>parallel call</b> start vertices are independent and are handed out to threads. <b>critical section</b> the shared best value is updated under a lock.</li>`,
     tabs_aria: "Search mode",
     tab_s: "Serial", tab_p: "Parallel",
     sub_s: n => `· ${n} steps`, sub_p: n => `· 3 threads · ${n} steps`,
@@ -409,23 +411,23 @@ const I18N = {
     legend: `<span><i class="sw c1"></i>C1</span><span><i class="sw nb"></i>N[C1] ∖ C1: unusable</span><span><i class="sw reg"></i>region P</span><span><i class="sw r"></i>R</span><span><i class="sw s"></i>wiped</span>`,
     tree_h: "Search tree",
     tree_hint: `faded: not visited yet · <i class="sw box pr"></i> pruned · <i class="sw box ck"></i> R tried · <i class="sw box im"></i> improvement`,
-    tree_aria: "Search tree: passes, anchors and the connected sets that were tried",
+    tree_aria: "Search tree: passes, start vertices and the connected sets that were tried",
     pass_label: p => `Pass ${p}`,
     wname: w => `Thread ${w}`, wsingle: "single thread", wshort: w => `T${w}`, copy: "copy ",
     g_aria: w => w ? `Network view for thread ${w}` : "Network view",
-    intro: p => `Press <b>Play</b> or <b>Step</b> to begin. ${p.par ? "Parallel mode shows 3 threads (the tests used 16); each one grabs the next anchor when it becomes free." : "In serial mode a single thread scans anchors 1 to 7 in order."}`,
+    intro: p => `Press <b>Play</b> or <b>Step</b> to begin. ${p.par ? "Parallel mode shows 3 threads (the tests used 16); each one grabs the next start vertex when it becomes free." : "In serial mode a single thread scans start vertices 1 to 7 in order."}`,
     start: p => `Start: maximum independent set I = ${fmt(p.I)}, α = ${p.I.length}. That gives F = ${p.F}, Y = ${p.Y}, so Z = ${p.Z}. The search will try to improve on it.`,
-    pass: p => p.par ? `Pass ${p.pass} begins. Each thread takes its own copy of the shared (F, Y) = (${p.F}, ${p.Y}) and prunes with that copy for the whole pass.` : `Pass ${p.pass} begins: every anchor will be scanned with (F, Y) = (${p.F}, ${p.Y}).`,
-    anchor: p => `Anchor c = ${p.c}: build the connected sets whose smallest vertex is ${p.c}, one by one.`,
-    visit: p => `C1 = ${fmt(p.A)}${p.A.length === 1 ? " (the anchor itself)" : ""}.`,
+    pass: p => p.par ? `Pass ${p.pass} begins. Each thread takes its own copy of the shared (F, Y) = (${p.F}, ${p.Y}) and prunes with that copy for the whole pass.` : `Pass ${p.pass} begins: every start vertex will be scanned with (F, Y) = (${p.F}, ${p.Y}).`,
+    anchor: p => `Start vertex c = ${p.c}: build the connected sets whose smallest vertex is ${p.c}, one by one.`,
+    visit: p => `C1 = ${fmt(p.A)}${p.A.length === 1 ? " (the start vertex itself)" : ""}.`,
     region: p => `P = V ∖ N[C1] = ${fmt(p.P)}, |P| = ${p.P.length}. The neighbours of C1, ${fmt(p.nb)}, cannot be used.`,
     prune: p => `|P| = ${p.P} &lt; F = ${p.F}: pruned. Growing C1 only shrinks P, so no extension of this branch can improve.`,
     check: p => `Largest R in P with parts ≤ ${p.k}: R = ${fmt(p.R)}, |R| = ${p.f}, Y′ = ${p.y}. ${p.better ? `<b>Better than the current (${p.F}, ${p.Y})!</b>` : `Not better than (${p.F}, ${p.Y}).`}`,
     improve_s: p => `New best: (F, Y) = (${p.F}, ${p.Y}), so Z = ${p.Z}, X = ${p.X}.`,
     improve_p: p => `Found (F, Y) = (${p.F}, ${p.Y}) in its own copy. It checks the shared best inside the critical section: ${p.g ? "<b>shared best updated.</b>" : `shared best is already (${p.gF}, ${p.gY}), unchanged.`} The other threads do not see this during the current pass.`,
-    restart: p => `Anchor c = ${p.c} is rescanned with the new bound.`,
-    barrier: () => `Barrier: every anchor is done and the threads wait for each other at the end of the pass.`,
-    passend: p => p.changed ? `Pass ${p.pass} is over but (F, Y) changed. Earlier anchors were scanned with the old value, so another pass is needed.` : `<b>Pass ${p.pass} finished without any change.</b> Every anchor was scanned with the same (F, Y) = (${p.F}, ${p.Y}) and none did better: that is the proof of optimality.`,
+    restart: p => `Start vertex c = ${p.c} is rescanned with the new bound.`,
+    barrier: () => `Barrier: every start vertex is done and the threads wait for each other at the end of the pass.`,
+    passend: p => p.changed ? `Pass ${p.pass} is over but (F, Y) changed. Earlier start vertices were scanned with the old value, so another pass is needed.` : `<b>Pass ${p.pass} finished without any change.</b> Every start vertex was scanned with the same (F, Y) = (${p.F}, ${p.Y}) and none did better: that is the proof of optimality.`,
     done: p => `Result: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. Wiping ${p.S.join(", ")} splits the network into {1, 2, 6} and {3, 4, 5}.`,
     t_h: "Current tests",
     sum: (k, p) => `AMD Ryzen 7 7800X3D · 16 cores · ${k}/88 files run, ${p} proven optimal`,
@@ -438,7 +440,7 @@ const I18N = {
     flags: `<li><code>-O2</code> standard optimisation level. <code>-O3</code> gave no extra speed on this code (34.4 s vs 34.5 s).</li>
       <li><code>-march=native</code> Zen 4 instructions: POPCNT, BMI, AVX-512. About 1.6× faster than plain <code>-O2</code> on a single core.</li>
       <li><code>-Wa,-muse-unaligned-vector-move</code> avoids the AVX stack-alignment crash that <code>-march=native</code> causes with MinGW on Windows (GCC bug 54412).</li>
-      <li><code>-fopenmp</code> enables the parallel loop that hands anchors out to threads.</li>
+      <li><code>-fopenmp</code> enables the parallel loop that hands start vertices out to threads.</li>
       <li><code>-static</code> produces a single .exe with no DLL dependencies.</li>`,
     scale_a: "cell colour: time", scale_b: "0.04 s → 240 s (log)",
     grid_aria: "Current test results, 16 cores",
@@ -562,7 +564,7 @@ function makePlayer(panel, steps, parallelMode) {
   const speed = h("label", "speed");
   const sid = "speed-" + (parallelMode ? "p" : "s");
   const speedTxt = h("span");
-  const speedIn = h("input"); speedIn.type = "range"; speedIn.id = sid; speedIn.min = "0.5"; speedIn.max = "4"; speedIn.step = "0.5"; speedIn.value = "1.5";
+  const speedIn = h("input"); speedIn.type = "range"; speedIn.id = sid; speedIn.min = "0.5"; speedIn.max = "4"; speedIn.step = "0.5"; speedIn.value = "1";
   speed.append(speedTxt, speedIn);
   const counter = h("span", "counter");
   controls.append(bPlay, bStep, bReset, speed, counter);
@@ -733,7 +735,7 @@ function makePlayer(panel, steps, parallelMode) {
     if (i >= total) stop();
     return true;
   }
-  const interval = () => 1100 / parseFloat(speedIn.value);
+  const interval = () => 2000 / parseFloat(speedIn.value);
   function tick() { if (stepOnce()) { timer = setTimeout(tick, interval()); playLabel(); } }
   function play() { if (i >= total) reset(); if (timer) return; tick(); }
   function stop() { if (timer) clearTimeout(timer); timer = null; playLabel(); }
