@@ -27,8 +27,9 @@ Results are stored as `results/<graph set>/<machine>/<method>/<setting>/`. Each 
 | Graphs | Machine | Setting | Proven optimal | Table |
 |---|---|---|---|---|
 | `data/bench` | low-power machine | 1 core, 120 s limit (some long runs on 4 cores) | 67 / 88 | [`results/bench/eski-makine/parcalar/eski-tur`](results/bench/eski-makine/parcalar/eski-tur/SONUCLAR.md) |
-| `data/bench` | AMD Ryzen 7 7800X3D | 16 threads, 600 s limit | 74 / 74 run (14 sparsest not run) | [`results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
-| `data/MEBtest` | AMD Ryzen 7 7800X3D | 16 threads, 600 s limit | 74 / 75 run (12020 not proven in 600 s) | [`results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
+| `data/bench` | AMD Ryzen 7 7800X3D | exact, 16 threads, 600 s limit | 74 / 74 run (14 sparsest not run) | [`results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
+| `data/MEBtest` | AMD Ryzen 7 7800X3D | exact, 16 threads, 600 s limit | 74 / 75 run (12020 not proven in 600 s) | [`results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
+| `data/MEBtest` | AMD Ryzen 7 7800X3D | ILS heuristic, 1 thread, 10 s | no proofs; matches all 74 proven optima, every answer within 1.05 s | [`results/MEBtest/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn`](results/MEBtest/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn/SONUCLAR.md) |
 
 The 7800X3D runs used GCC 16.2.0 (WinLibs, MinGW-w64) with this command:
 
@@ -75,5 +76,6 @@ Most notes and file names are in Turkish.
 3. **Basic bounds.** W. Goddard, H. C. Swart. *Integrity in graphs: bounds and basics.* J. Combin. Math. Combin. Comput. 7 (1990) 139–151.
 4. **Parameterised complexity** (O(p^(p+1)·n) algorithm, p³ kernel). P. G. Drange, M. S. Dregi, P. van 't Hof. *On the computational complexity of vertex integrity and component order connectivity.* Algorithmica (2016). [arXiv:1403.6331](https://arxiv.org/abs/1403.6331)
 5. **Exact exponential algorithm** (O(1.9602^n), theoretical). S. Das, S. Das, S. S. Islam, R. M. Mitra, A. Mohapatra, A. Paul. *Solving vertex integrity faster than 2^n.* arXiv (2026). [arXiv:2609.33779](https://arxiv.org/abs/2609.33779)
+6. **Basis of the heuristic** (ILS for maximum independent set; `alternatif_cozuculer/heur` generalises it to "every part ≤ k"). D. V. Andrade, M. G. C. Resende, R. F. Werneck. *Fast local search for the maximum independent set problem.* Journal of Heuristics 18 (2012) 525–547.
 
 The solver's reformulation `Z = n − max(|K| − largest component)` matches the one used in [5], which credits [3]. The search itself (start-vertex enumeration of the largest component, region bounds, passes repeated until nothing changes) does not directly match a method in these sources. We have not surveyed the literature systematically, so a similar method may exist that we have not seen.
