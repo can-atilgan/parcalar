@@ -395,8 +395,8 @@ const I18N = {
     notes_common: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (okuma + arama + çıktı yazma + öz-kontrol). <b>*</b> 600 sn sınırında ispatlanamadı. <b>—</b> bu turda koşulmayan dosya.</p>`,
     notes_bench: `<p>Bu graflar bu çalışma için üretilen rastgele G(n, p) graflarıdır (<code>bench/</code>): dosya adı n ve kenar yüzdesini verir (ör. 14030 → n = 140, %30). Seyreklik arttıkça arama ağacı büyüyor; koşulmayanlar en seyrek graflar.</p>
       <p>Bağımsız doğrulama (<code>tools/verify.py</code>) bu tabloda yer almıyor, ayrıca yapılacak.</p>`,
-    notes_meb: `<p>Bu graflar hocanın 2014 tarihli test graflarıdır (<code>MEBtest/</code>). Aynı adlı <code>bench/</code> graflarından farklıdırlar ve iç içedirler: her yoğunluk, bir altındakinin bütün kenarlarını içerir. Koşulan dosyalar <code>bench/</code> sekmesindekilerle aynı.</p>
-      <p>10050'nin sonucu (Z = 91) dört bağımsız kesin çözücü ve sezgisel çözücüyle ayrıca doğrulandı. Koşulan her dosya ispatlandı ve bütün çıktılar <code>tools/verify.py</code> ile kontrol edildi.</p>`,
+    notes_meb: `<p>Bu graflar hocanın 2014 tarihli test graflarıdır (<code>MEBtest/</code>). Aynı adlı <code>bench/</code> graflarından farklıdırlar ve iç içedirler: her yoğunluk, bir altındakinin bütün kenarlarını içerir. Koşulan dosyalar <code>bench/</code> sekmesindekilerle aynı, artı 12020.</p>
+      <p>10050'nin sonucu (Z = 91) dört bağımsız kesin çözücü ve sezgisel çözücüyle ayrıca doğrulandı. 12020 dışında koşulan her dosya ispatlandı (12020 600 sn sınırında bitmedi, yazılan çözüm geçerli). Bütün çıktılar <code>tools/verify.py</code> ile kontrol edildi.</p>`,
     th_light: "Açık", th_dark: "Koyu",
     sec: "sn", na: f => `${f}.txt bu turda koşulmadı`, proven: "ispatlı", unproven: "ispatsız",
   },
@@ -490,8 +490,8 @@ const I18N = {
     notes_common: `<p>Cell: <b>Z/X</b> and the time measured by the program (read + search + output + self-check). <b>*</b> not proven within the 600 s limit. <b>—</b> marks a file not run in this round.</p>`,
     notes_bench: `<p>These are random G(n, p) graphs generated for this study (<code>bench/</code>): the file name gives n and the edge percentage (e.g. 14030 → n = 140, 30%). The sparser the graph, the larger the search tree; the files not run are the sparsest ones.</p>
       <p>Independent verification (<code>tools/verify.py</code>) is not part of this table and will be done separately.</p>`,
-    notes_meb: `<p>These are the instructor's test graphs from 2014 (<code>MEBtest/</code>). They differ from the <code>bench/</code> graphs with the same names and are nested: each density contains every edge of the one below it. The same files were run as in the <code>bench/</code> tab.</p>
-      <p>The result for 10050 (Z = 91) was also confirmed with four independent exact solvers and the heuristic. Every file that was run was proven optimal, and every output was checked with <code>tools/verify.py</code>.</p>`,
+    notes_meb: `<p>These are the instructor's test graphs from 2014 (<code>MEBtest/</code>). They differ from the <code>bench/</code> graphs with the same names and are nested: each density contains every edge of the one below it. The same files were run as in the <code>bench/</code> tab, plus 12020.</p>
+      <p>The result for 10050 (Z = 91) was also confirmed with four independent exact solvers and the heuristic. Every file that was run was proven optimal except 12020, which did not finish within 600 s (the answer it wrote is valid). Every output was checked with <code>tools/verify.py</code>.</p>`,
     th_light: "Light", th_dark: "Dark",
     sec: "s", na: f => `${f}.txt was not run in this round`, proven: "proven", unproven: "not proven",
   },
