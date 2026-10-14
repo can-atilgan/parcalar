@@ -65,7 +65,11 @@ Most notes and file names are in Turkish.
 
 ## References
 
-1. C. A. Barefoot, R. C. Entringer, H. C. Swart. *Vulnerability in graphs: a comparative survey.* J. Combin. Math. Combin. Comput. 1 (1987) 13–22.
-2. L. H. Clark, R. C. Entringer, M. R. Fellows. *Computational complexity of integrity.* J. Combin. Math. Combin. Comput. 2 (1987) 179–191.
-3. K. S. Bagga, L. W. Beineke, W. D. Goddard, M. J. Lipman, R. E. Pippert. *A survey of integrity.* Discrete Applied Mathematics 37/38 (1992) 13–28.
-4. P. G. Drange, M. S. Dregi, P. van 't Hof. *On the computational complexity of vertex integrity and component order connectivity.* Algorithmica (2016). [arXiv:1403.6331](https://arxiv.org/abs/1403.6331)
+1. **Original definition.** C. A. Barefoot, R. C. Entringer, H. C. Swart. *Vulnerability in graphs: a comparative survey.* J. Combin. Math. Combin. Comput. 1 (1987) 13–22.
+2. **NP-completeness** (also on planar graphs). L. H. Clark, R. C. Entringer, M. R. Fellows. *Computational complexity of integrity.* J. Combin. Math. Combin. Comput. 2 (1987) 179–191.
+3. **Basic bounds.** W. Goddard, H. C. Swart. *Integrity in graphs: bounds and basics.* J. Combin. Math. Combin. Comput. 7 (1990) 139–151.
+4. **Survey.** K. S. Bagga, L. W. Beineke, W. D. Goddard, M. J. Lipman, R. E. Pippert. *A survey of integrity.* Discrete Applied Mathematics 37/38 (1992) 13–28.
+5. **Parameterised complexity** (O(p^(p+1)·n) algorithm, p³ kernel). P. G. Drange, M. S. Dregi, P. van 't Hof. *On the computational complexity of vertex integrity and component order connectivity.* Algorithmica (2016). [arXiv:1403.6331](https://arxiv.org/abs/1403.6331)
+6. **Exact exponential algorithm** (O(1.9602^n), theoretical). S. Das, S. Das, S. S. Islam, R. M. Mitra, A. Mohapatra, A. Paul. *Solving vertex integrity faster than 2^n.* arXiv (2026). [arXiv:2609.33779](https://arxiv.org/abs/2609.33779)
+
+The solver's reformulation `Z = n − max(|K| − largest component)` matches the one used in [6], which credits [3]. The search itself (start-vertex enumeration of the largest component, region bounds, passes repeated until nothing changes) is this study's own design. It was not taken from these papers.
