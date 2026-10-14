@@ -572,7 +572,7 @@ const I18N = {
       <li><code>-static</code> DLL bağımlılığı olmayan tek bir .exe üretir.</li>`,
     scale_a: "hücre rengi: süre", scale_b: "0.04 sn → 240 sn (log)",
     grid_aria: "Güncel test sonuçları, 16 çekirdek",
-    notes_common: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (okuma + arama + çıktı yazma + öz-kontrol). <b>*</b> 600 sn sınırında ispatlanamadı. <b>—</b> bu turda koşulmayan dosya.</p>`,
+    notes_common: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (okuma + arama + çıktı yazma + öz-kontrol). <b>?</b> 600 sn sınırında ispatlanamadı: yazılan çözüm geçerli ama optimal olduğu bilinmiyor. <b>—</b> bu turda koşulmayan dosya.</p>`,
     notes_bench: `<p>Bu graflar bu çalışma için üretilen rastgele G(n, p) graflarıdır (<code>data/bench/</code>): dosya adı n ve kenar yüzdesini verir (ör. 14030 → n = 140, %30). Seyreklik arttıkça arama ağacı büyüyor; koşulmayanlar en seyrek graflar.</p>
       <p>Bağımsız doğrulama (<code>tools/verify.py</code>) bu tabloda yer almıyor, ayrıca yapılacak.</p>`,
     notes_meb: `<p>Bu graflar hocanın 2014 tarihli test graflarıdır (<code>data/MEBtest/</code>). Aynı adlı <code>data/bench/</code> graflarından farklıdırlar ve iç içedirler: her yoğunluk, bir altındakinin bütün kenarlarını içerir. Koşulan dosyalar <code>data/bench/</code> sekmesindekilerle aynı, artı 12020.</p>
@@ -676,7 +676,7 @@ const I18N = {
       <li><code>-static</code> produces a single .exe with no DLL dependencies.</li>`,
     scale_a: "cell colour: time", scale_b: "0.04 s → 240 s (log)",
     grid_aria: "Current test results, 16 cores",
-    notes_common: `<p>Cell: <b>Z/X</b> and the time measured by the program (read + search + output + self-check). <b>*</b> not proven within the 600 s limit. <b>—</b> marks a file not run in this round.</p>`,
+    notes_common: `<p>Cell: <b>Z/X</b> and the time measured by the program (read + search + output + self-check). <b>?</b> not proven within the 600 s limit: the answer written is valid, but whether it is optimal is unknown. <b>—</b> marks a file not run in this round.</p>`,
     notes_bench: `<p>These are random G(n, p) graphs generated for this study (<code>data/bench/</code>): the file name gives n and the edge percentage (e.g. 14030 → n = 140, 30%). The sparser the graph, the larger the search tree; the files not run are the sparsest ones.</p>
       <p>Independent verification (<code>tools/verify.py</code>) is not part of this table and will be done separately.</p>`,
     notes_meb: `<p>These are the instructor's test graphs from 2014 (<code>data/MEBtest/</code>). They differ from the <code>data/bench/</code> graphs with the same names and are nested: each density contains every edge of the one below it. The same files were run as in the <code>data/bench/</code> tab, plus 12020.</p>
@@ -1060,7 +1060,7 @@ function renderGrid() {
         else mark = " ?";
         title = `${k}.txt · ${t("ils_title")}`;
       } else {
-        mark = r[3] === "ispatli" ? "" : "*";
+        mark = r[3] === "ispatli" ? "" : " ?";
         title = `${k}.txt · ${r[3] === "ispatli" ? t("proven") : t("unproven")}`;
       }
       html += `<td style="--heat:${heat}%" class="${heat > 40 ? "hot" : ""}" title="${title}"><span class="zx">${r[1]}/${r[2]}${mark}</span><span class="t">${tm.toFixed(2)} ${t("sec")}</span></td>`;
