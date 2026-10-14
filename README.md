@@ -6,7 +6,7 @@ A research study on solving one NP-hard network problem exactly and proving that
 
 You are given a network of `n` computers (an undirected graph). Wipe a set `S` of computers. Let `X = |S|`, and let `Y` be the size of the largest connected part that remains. The goal is to **minimise `Z = X + Y`**. If several solutions reach the same `Z`, the one with the smallest `X` is chosen.
 
-This quantity is the **vertex integrity** of the graph. Computing it is NP-hard on general graphs (Clark, Entringer & Fellows, 1987).
+This quantity is the **vertex integrity** of the graph. Barefoot, Entringer and Swart introduced it in 1987 to measure how vulnerable a network is [1]. Computing it is NP-hard on general graphs [2].
 
 ## What this study does
 
@@ -62,3 +62,10 @@ The output is `Z=<z>  X=<x>`, followed by `S: ...` (the wiped computers, numbere
 | `viz/` | interactive page: `page.html` + `sim.js`, built with `node viz/build.js` into `viz/dist/index.html` |
 
 Most notes and file names are in Turkish.
+
+## References
+
+1. C. A. Barefoot, R. C. Entringer, H. C. Swart. *Vulnerability in graphs: a comparative survey.* J. Combin. Math. Combin. Comput. 1 (1987) 13–22.
+2. L. H. Clark, R. C. Entringer, M. R. Fellows. *Computational complexity of integrity.* J. Combin. Math. Combin. Comput. 2 (1987) 179–191.
+3. K. S. Bagga, L. W. Beineke, W. D. Goddard, M. J. Lipman, R. E. Pippert. *A survey of integrity.* Discrete Applied Mathematics 37/38 (1992) 13–28.
+4. P. G. Drange, M. S. Dregi, P. van 't Hof. *On the computational complexity of vertex integrity and component order connectivity.* Algorithmica (2016). [arXiv:1403.6331](https://arxiv.org/abs/1403.6331)
