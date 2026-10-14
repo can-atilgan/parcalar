@@ -1,0 +1,64 @@
+# ParçalaR: exact vertex integrity solver
+
+A research study on solving one NP-hard network problem exactly and proving that each answer is optimal.
+
+## The problem
+
+You are given a network of `n` computers (an undirected graph). Wipe a set `S` of computers. Let `X = |S|`, and let `Y` be the size of the largest connected part that remains. The goal is to **minimise `Z = X + Y`**. If several solutions reach the same `Z`, the one with the smallest `X` is chosen.
+
+This quantity is the **vertex integrity** of the graph. Computing it is NP-hard on general graphs (Clark, Entringer & Fellows, 1987).
+
+## What this study does
+
+- **An exact solver**, [`final/parcalar.c`](final/parcalar.c): a single C file using branch and bound over connected sets, with bitset bounds. Each answer comes with a proof of optimality. OpenMP parallelism is optional.
+- **Four alternative exact solvers and a heuristic**, in [`alternatif_cozuculer/`](alternatif_cozuculer/). They were used for comparison and cross-checking, and each has its own notes.
+- **Independent checkers**, in [`tools/`](tools/):
+  - a feasibility verifier (`verify.py`),
+  - a brute-force oracle for small graphs (`brute.c`),
+  - a CP-SAT model (`cpsat.py`),
+  - a random graph generator (`gen.py`).
+- **Benchmarks** on 88 random graphs (`n` = 100–200, edge density 20–90%), in [`bench/`](bench/).
+- **An interactive visualisation** of the search, serial and parallel, in Turkish and English, in [`viz/`](viz/).
+
+## Results
+
+| Run | Machine | Proven optimal | Table |
+|---|---|---|---|
+| Original | low-power machine, 1 core, 120 s limit (some long runs on 4 cores) | 67 / 88 | [`results/SONUCLAR.md`](results/SONUCLAR.md) |
+| Current | AMD Ryzen 7 7800X3D, 16 threads, 600 s limit | 74 / 74 run (14 sparsest not run yet) | [`results/AMD_Ryzen_7_7800X3D/16-cekirdek/SONUCLAR.md`](results/AMD_Ryzen_7_7800X3D/16-cekirdek/SONUCLAR.md) |
+
+The current run used GCC 16.2.0 (WinLibs, MinGW-w64) with this command:
+
+```
+gcc -O2 -march=native -Wa,-muse-unaligned-vector-move -fopenmp -static final/parcalar.c -o parcalar
+```
+
+- `-march=native` is about 1.6× faster than plain `-O2` on a single core. Most of the gain comes from POPCNT/BMI.
+- `-Wa,-muse-unaligned-vector-move` works around a MinGW AVX stack-alignment crash (GCC bug 54412).
+
+Sparse graphs (20–30% density) are the hard cases.
+
+## Build and run
+
+```
+gcc -O2 -march=native parcalar.c -o parcalar              # single thread
+gcc -O2 -march=native -fopenmp parcalar.c -o parcalar     # all cores
+./parcalar 10020.txt            # or: ./parcalar 100 20   -> reads 10020.txt
+./parcalar 10020.txt -t 600     # time limit: prints the best valid answer, flagged as unproven
+python3 tools/verify.py bench/10020.txt output.txt         # independent feasibility check
+```
+
+The output is `Z=<z>  X=<x>`, followed by `S: ...` (the wiped computers, numbered from 1). The input format is `n m` on the first line, then the `n × n` 0/1 adjacency matrix. See [`final/README.md`](final/README.md) for details (in Turkish) and [`small/example.txt`](small/example.txt) for the 7-node example (answer `Z=4 X=1`, `S: 7`).
+
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `final/` | the exact solver |
+| `alternatif_cozuculer/` | alternative solvers (`bnb`, `rds`, …) and a heuristic, each with NOTES |
+| `bench/` | 88 random test graphs `{n}{density}.txt`, generated for this study |
+| `results/` | result tables, raw timings and every program output |
+| `tools/` | verifier, brute force, CP-SAT model, generator; `tools/windows/` has the Windows benchmark scripts |
+| `viz/` | interactive page: `page.html` + `sim.js`, built with `node viz/build.js` into `viz/dist/index.html` |
+
+Most notes and file names are in Turkish.

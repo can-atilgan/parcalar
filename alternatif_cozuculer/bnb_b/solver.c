@@ -1,0 +1,731 @@
+/*
+ * ParcalaR exact solver (vertex integrity with the "fewest destroyed machines" tie rule)
+ *
+ * Usage:  ./solver FILE [-v | -vv] [-t SECONDS]
+ * Output: Z=<z>  X=<x>
+ *         S: <destroyed machines, 1-based input indices>
+ * -v / -vv print a phase profile to stderr.  -t: if the exact search exceeds SECONDS of CPU
+ * time, print the best solution found so far (NOT proven optimal; note on stderr, exit code 3).
+ *
+ * Reformulation (proofs in NOTES.md):
+ *   K = kept set, f(K) = |K| - maxcomp(G[K]), F = max f, Z = n - F,
+ *   Ymax = largest maxcomp(K) over all K with f(K) = F, X = Z - Ymax.
+ *   K = C1 + R with C1 a largest component (|C1| = k): R lies in region(C1) = V \ N[C1],
+ *   comps(R) <= k and f(K) = |R|.  L(R) := maxcomp(G - N[R]) >= k for every such C1.
+ *   Truncation lemma: replacing C1 by a connected s2-subset keeps f, so any K with
+ *   f >= F+1 has a "C2-form" twin: two components C1, C2 of the same size k.
+ *
+ * Algorithm:
+ *   1. alpha(G) by bitset MIS branch and bound -> F >= alpha - 1 (the k = 1 case).
+ *   2. Local search per k -> initial (F, Y) and witness.
+ *   3. Main pass: enumerate every connected set C1 (|C1| = k >= 2, canonical: anchor =
+ *      min vertex) with |V \ N[C1]| >= F.  For each one, with the current (F, Y):
+ *        k <= Y   : is there a C2-form R (C2 a connected k-set in region(C1),
+ *                   anchor(C2) > anchor(C1)) with |R| >= F+1 ?
+ *        k == Y+1 : is there any R in region(C1), comps <= k, |R| >= F ?   (tie, no C2)
+ *        k >= Y+2 : is there a C2-form R with |R| >= F ?
+ *      R'' = R \ C2 is found by a component-at-a-time branch and bound.  A success sets
+ *      F = |R|, Y = L(R) (or raises Y on a tie) and the current anchor is redone.
+ *   4. Tie pass(es) for the anchors handled before the last change, size Y+1, no C2.
+ *   The k-range stops by itself: C1 is only extended while |V \ N[C1]| >= F.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <time.h>
+
+#define MAXN 256
+#define MW 4
+
+typedef struct { uint64_t w[MW]; } bs;
+
+#if defined(__GNUC__) && !defined(NO_BUILTINS)
+#define POPC(x) __builtin_popcountll(x)
+#define CTZ(x) __builtin_ctzll(x)
+#else
+static int popc_fb(uint64_t x) {
+    x = x - ((x >> 1) & 0x5555555555555555ULL);
+    x = (x & 0x3333333333333333ULL) + ((x >> 2) & 0x3333333333333333ULL);
+    x = (x + (x >> 4)) & 0x0F0F0F0F0F0F0F0FULL;
+    return (int)((x * 0x0101010101010101ULL) >> 56);
+}
+static int ctz_fb(uint64_t x) { int c = 0; while (!(x & 1)) { x >>= 1; c++; } return c; }
+#define POPC(x) popc_fb(x)
+#define CTZ(x) ctz_fb(x)
+#endif
+
+static int n;
+static bs adj[MAXN], nadj[MAXN], ALL, above[MAXN];
+static int gdeg[MAXN];
+static int orig[MAXN]; /* internal label -> input index (0-based) */
+static int VERB = 0;
+static double TLIM = -1;   /* -t SECONDS: print the best known (unproven) answer when exceeded */
+
+/* ------------------------------------------------------------------ bitsets */
+static void bclr(bs *a) { int i; for (i = 0; i < MW; i++) a->w[i] = 0; }
+static void bset(bs *a, int v) { a->w[v >> 6] |= 1ULL << (v & 63); }
+static void bunset(bs *a, int v) { a->w[v >> 6] &= ~(1ULL << (v & 63)); }
+static int NW = MW; /* words actually used */
+static int bcount(const bs *a) { int i, c = 0; for (i = 0; i < NW; i++) c += POPC(a->w[i]); return c; }
+static int bempty(const bs *a) { int i; for (i = 0; i < MW; i++) if (a->w[i]) return 0; return 1; }
+static bs band(bs a, bs b) { int i; for (i = 0; i < MW; i++) a.w[i] &= b.w[i]; return a; }
+static bs bor(bs a, bs b) { int i; for (i = 0; i < MW; i++) a.w[i] |= b.w[i]; return a; }
+static bs bandn(bs a, bs b) { int i; for (i = 0; i < MW; i++) a.w[i] &= ~b.w[i]; return a; }
+static int bfirst(const bs *a) { int i; for (i = 0; i < MW; i++) if (a->w[i]) return i * 64 + CTZ(a->w[i]); return -1; }
+static int bandcount(const bs *a, const bs *b) { int i, c = 0; for (i = 0; i < NW; i++) c += POPC(a->w[i] & b->w[i]); return c; }
+#define FOREACH(v, set) \
+    for (int v##_i = 0; v##_i < MW; v##_i++) \
+        for (uint64_t v##_x = (set).w[v##_i]; v##_x; v##_x &= v##_x - 1) \
+            for (int v = v##_i * 64 + CTZ(v##_x), v##_o = 1; v##_o; v##_o = 0)
+
+static double cpu(void) { return (double)clock() / CLOCKS_PER_SEC; }
+
+/* connected component of v inside S */
+static bs compof(int v, bs S) {
+    bs c, fr;
+    bclr(&c); bset(&c, v); fr = c;
+    while (!bempty(&fr)) {
+        bs nf; bclr(&nf);
+        FOREACH(u, fr) { nf = bor(nf, adj[u]); }
+        nf = band(nf, S); nf = bandn(nf, c);
+        c = bor(c, nf); fr = nf;
+    }
+    return c;
+}
+static int maxcomp(bs S) {
+    int mx = 0;
+    while (!bempty(&S)) {
+        int s;
+        bs c = compof(bfirst(&S), S);
+        s = bcount(&c);
+        if (s > mx) mx = s;
+        S = bandn(S, c);
+        if (bcount(&S) <= mx) break;
+    }
+    return mx;
+}
+/* L(R) = largest component of G - N[R] */
+static int Lof(bs R) {
+    bs N = R;
+    FOREACH(v, R) { N = bor(N, adj[v]); }
+    return maxcomp(bandn(ALL, N));
+}
+
+/* ------------------------------------------------------------------ statistics */
+static long st_mis, st_rest, st_comp, st_c1, st_c2, st_slice[MAXN], st_hit;
+
+/* ------------------------------------------------------------------ MIS (k = 1 and s = 1 rests) */
+static bs mis_cur, mis_sol;
+static int mis_best;
+static int mis_rec(bs P, int size, int target) {
+    int order[MAXN], col[MAXN], cnt = 0, c = 0, i;
+    bs U = P;
+    st_mis++;
+    while (!bempty(&U)) {
+        bs Q = U;
+        c++;
+        while (!bempty(&Q)) {
+            int v = bfirst(&Q);
+            bunset(&U, v); bunset(&Q, v);
+            Q = band(Q, adj[v]);
+            order[cnt] = v; col[cnt] = c; cnt++;
+        }
+    }
+    for (i = cnt - 1; i >= 0; i--) {
+        int v = order[i], r = 0;
+        bs NP;
+        if (size + col[i] <= mis_best) return 0;
+        bset(&mis_cur, v);
+        NP = bandn(P, nadj[v]);
+        if (bempty(&NP)) {
+            if (size + 1 > mis_best) { mis_best = size + 1; mis_sol = mis_cur; if (mis_best >= target) r = 1; }
+        } else r = mis_rec(NP, size + 1, target);
+        bunset(&mis_cur, v);
+        if (r) return 1;
+        bunset(&P, v);
+    }
+    return 0;
+}
+/* 1 if alpha(G[U]) >= need ; solution in mis_sol */
+static int mis_dec(bs U, int need) {
+    bclr(&mis_cur); mis_best = need - 1;
+    return mis_rec(U, 0, need);
+}
+static int mis_opt(bs U) {
+    bclr(&mis_cur); bclr(&mis_sol); mis_best = 0;
+    mis_rec(U, 0, MAXN + 1);
+    return mis_best;
+}
+
+/* ------------------------------------------------------------------ bounds for "R in U, comps <= s, |R| >= need" */
+/* peeling: v in R  =>  |R| <= min(s, deg_U(v)+1) + |U \ N[v]|   <=>  deg_U(v) <= |U| - need + s - 1 */
+static bs peelh(bs U, int s, int need, int *hint) {
+    int cnt = bcount(&U), D, mx = 0, any = 0;
+    int dg[MAXN];
+    bs rm;
+    if (cnt < need) return U;
+    D = cnt - need + s - 1;
+    if (D >= cnt - 1 || D >= *hint) return U;
+    bclr(&rm);
+    FOREACH(u, U) {
+        int d = bandcount(&adj[u], &U);
+        dg[u] = d;
+        if (d > D) { bset(&rm, u); any = 1; } else if (d > mx) mx = d;
+    }
+    if (!any) { *hint = mx; return U; }
+    for (;;) {
+        /* remove rm, update degrees, recheck with the new D */
+        int removed = bcount(&rm);
+        U = bandn(U, rm);
+        cnt -= removed;
+        if (cnt < need) return U;
+        FOREACH(r, rm) {
+            bs nb = band(adj[r], U);
+            FOREACH(v, nb) { dg[v]--; }
+        }
+        D = cnt - need + s - 1;
+        bclr(&rm); any = 0; mx = 0;
+        FOREACH(u, U) {
+            if (dg[u] > D) { bset(&rm, u); any = 1; } else if (dg[u] > mx) mx = dg[u];
+        }
+        if (!any) { *hint = mx; return U; }
+    }
+}
+static bs peel(bs U, int s, int need) { int h = MAXN; return peelh(U, s, need, &h); }
+/* greedy clique partition, each clique holds at most s kept vertices */
+static int cliquebound(bs U, int s) {
+    int ub = 0;
+    while (!bempty(&U)) {
+        bs Q = U;
+        int t = 0;
+        while (!bempty(&Q)) {
+            int v = bfirst(&Q);
+            bunset(&U, v); bunset(&Q, v); Q = band(Q, adj[v]);
+            t++;
+        }
+        ub += t < s ? t : s;
+    }
+    return ub;
+}
+/* greedy packing of disjoint connected t-sets: each needs a removed vertex */
+static int packbound(bs U, int t) {
+    int cnt = 0;
+    while (bcount(&U) >= t) {
+        int v = bfirst(&U), sz = 1;
+        bs S, fr;
+        bclr(&S); bset(&S, v);
+        fr = band(adj[v], U);
+        while (sz < t && !bempty(&fr)) {
+            int u = bfirst(&fr);
+            bset(&S, u); sz++;
+            fr = bor(fr, adj[u]); fr = band(fr, U); fr = bandn(fr, S);
+        }
+        if (sz == t) cnt++;
+        U = bandn(U, S);
+    }
+    return cnt;
+}
+
+/* vertices v of S with |N[v] cap Rg| <= t  (unary bit-plane counters) */
+static bs lowloss(bs S, bs Rg, int t) {
+    bs P[34];
+    int j, done = 0;
+    if (t > 32) return S;
+    for (j = 0; j <= t + 1; j++) bclr(&P[j]);
+    P[0] = S;
+    FOREACH(r, Rg) {
+        bs x = band(nadj[r], S);
+        int top = done + 1 < t + 1 ? done + 1 : t + 1;
+        for (j = top; j >= 1; j--) P[j] = bor(P[j], band(P[j - 1], x));
+        done++;
+    }
+    return bandn(S, P[t + 1]);
+}
+
+/* ------------------------------------------------------------------ rest search */
+/* exists R subset U, all comps of G[R] <= s, |R| >= need ?  (solution in SOL) */
+static bs SOL;
+static int rest(bs U, int s, int need);
+
+/* building the component C (contains the seed); Fr = undecided frontier, NC = C u N(C) cap U */
+static int comp_enum(bs C, int cs, bs Fr, bs U, bs NC, int s, int need) {
+    bs Rg = bandn(U, NC);
+    int rg = bcount(&Rg);
+    st_comp++;
+    if (cs < s && !bempty(&Fr)) {
+        int cb, fr;
+        if (cs + (s - cs) + rg < need) return 0;
+        cb = cliquebound(Rg, s);
+        if (cs + (s - cs) + cb < need) return 0;
+        {   /* frontier filter: x joins C => other comps live in Rg \ N(x) */
+            bs rm; int any = 0;
+            bclr(&rm);
+            int t = s + rg - need;
+            FOREACH(x, Fr) { if (gdeg[x] > t && bandcount(&Rg, &adj[x]) > t) { bset(&rm, x); any = 1; } }
+            if (any) { Fr = bandn(Fr, rm); U = bandn(U, rm); NC = bandn(NC, rm); }
+        }
+        fr = bcount(&Fr);
+        while (fr > 0) {
+            int u, add = s - cs < fr ? s - cs : fr;
+            bs C2, au, Fr2, NC2;
+            if (cs + add + cb < need) return 0;
+            u = bfirst(&Fr);
+            C2 = C; bset(&C2, u);
+            au = band(adj[u], U);
+            Fr2 = bor(Fr, au); Fr2 = bandn(Fr2, C2);
+            NC2 = bor(NC, au);
+            if (comp_enum(C2, cs + 1, Fr2, U, NC2, s, need)) return 1;
+            bunset(&Fr, u); bunset(&U, u); bunset(&NC, u); fr--;
+        }
+    }
+    if (cs + rg < need) return 0;
+    if (rest(Rg, s, need - cs)) { SOL = bor(SOL, C); return 1; }
+    return 0;
+}
+static int rest_pp(bs U, int s, int need, int prepeeled) {
+    st_rest++;
+    if (need <= 0) { bclr(&SOL); return 1; }
+    if (!prepeeled) U = peel(U, s, need);
+    if (bcount(&U) < need) return 0;
+    if (s == 1) { if (mis_dec(U, need)) { SOL = mis_sol; return 1; } return 0; }
+    if (bcount(&U) - packbound(U, s + 1) < need) return 0;
+    if (cliquebound(U, s) < need) return 0;
+    for (;;) {
+        int v = -1, bd = -1;
+        bs C, Fr, NC;
+        FOREACH(x, U) { int d = bandcount(&adj[x], &U); if (d > bd) { bd = d; v = x; } }
+        bclr(&C); bset(&C, v);
+        Fr = band(adj[v], U);
+        NC = bor(C, Fr);
+        if (comp_enum(C, 1, Fr, U, NC, s, need)) return 1;
+        bunset(&U, v);
+        U = peel(U, s, need);
+        if (bcount(&U) < need) return 0;
+        if (cliquebound(U, s) < need) return 0;
+    }
+}
+static int rest(bs U, int s, int need) { return rest_pp(U, s, need, 0); }
+
+/* ------------------------------------------------------------------ C2 enumeration */
+static int c2_k, c2_need; /* size of C2, need for R'' */
+/* C: partial C2, Fr: undecided frontier (subset Allow), Rg: region for R'' (= P \ N[C], peeled) */
+static int enum_c2(bs C, int cs, bs Fr, bs Allow, bs Rg, int hint) {
+    int rg;
+    st_c2++;
+    Rg = peelh(Rg, c2_k, c2_need, &hint);
+    rg = bcount(&Rg);
+    if (rg < c2_need) return 0;
+    if (cs == c2_k) {
+        if (rest(Rg, c2_k, c2_need)) { SOL = bor(SOL, C); return 1; }
+        return 0;
+    }
+    {
+        bs rm; int any = 0;
+        bclr(&rm);
+        int t = rg - c2_need;
+        if (t <= 32 && (t + 1) * rg < 2 * bcount(&Fr)) {
+            bs keep = lowloss(Fr, Rg, t);
+            rm = bandn(Fr, keep); any = !bempty(&rm);
+        } else {
+            FOREACH(x, Fr) { if (gdeg[x] > t && bandcount(&Rg, &adj[x]) > t) { bset(&rm, x); any = 1; } }
+        }
+        if (any) { Fr = bandn(Fr, rm); Allow = bandn(Allow, rm); }
+    }
+    while (!bempty(&Fr)) {
+        int u = bfirst(&Fr);
+        bs C2 = C, au, Fr2;
+        bset(&C2, u);
+        au = band(adj[u], Allow);
+        Fr2 = bor(Fr, au); Fr2 = bandn(Fr2, C2);
+        if (enum_c2(C2, cs + 1, Fr2, Allow, bandn(Rg, nadj[u]), hint)) return 1;
+        bunset(&Fr, u); bunset(&Allow, u);
+    }
+    return 0;
+}
+/* C2-form check for C1 (size k, anchor c, region Rg): R = C2 u R'' in Rg, |R| >= need */
+static int slice_c2(bs P, int k, int c, int need) {
+    int hint = MAXN;
+    bs cand;
+    if (bcount(&P) < need) return 0;
+    if (bcount(&P) - packbound(P, k + 1) < need) return 0;
+    c2_k = k; c2_need = need - k;
+    cand = band(P, above[c]);
+    FOREACH(c2, cand) {
+        bs B, Allow, Fr;
+        bclr(&B); bset(&B, c2);
+        Allow = band(P, above[c2]);
+        Fr = band(adj[c2], Allow);
+        if (enum_c2(B, 1, Fr, Allow, bandn(P, nadj[c2]), hint)) return 1;
+    }
+    return 0;
+}
+
+/* ------------------------------------------------------------------ main search */
+static int F, Y;
+static bs bestR;   /* witness: K = bestR + largest component of V \ N[bestR] has f = F, maxcomp = Y */
+static int anchor;
+static int phase; /* 1: main pass, 2: final tie pass */
+
+static void update_from(bs R) {
+    int f = bcount(&R), y = Lof(R);
+    if (f > F) { F = f; Y = y; bestR = R; }
+    else if (f == F && y > Y) { Y = y; bestR = R; }
+    if (VERB) fprintf(stderr, "    found f=%d L=%d -> F=%d Y=%d (anchor %d)\n", f, y, F, Y, anchor);
+}
+
+/* need for a C1 of size k, and peeling threshold theta = need - k */
+static int needk(int k) { return k <= Y ? F + 1 : F; }
+/* P = region of C1, already peeled with (k, needk(k)) */
+static int process_c1(bs P, int k) {
+    st_slice[k]++;
+    if (bcount(&P) < needk(k)) return 0;
+    if (k <= Y) {
+        if (slice_c2(P, k, anchor, F + 1)) { st_hit++; update_from(SOL); return 1; }
+    } else if (k == Y + 1) {
+        if (rest_pp(P, k, F, 1)) { st_hit++; update_from(SOL); return 1; }
+    } else {
+        if (slice_c2(P, k, anchor, F)) { st_hit++; update_from(SOL); return 1; }
+    }
+    return 0;
+}
+static int tieK;
+/* Enumerate connected sets A with min vertex = anchor (other vertices from Allow, Fr = the
+   undecided frontier), Rg = V \ N[A].  phase 1: every A of size >= 2 is a C1 candidate;
+   phase 2: only size tieK, no-C2 tie check.  PR = parent's region peeled for size a. */
+static void print_answer(void);
+static void time_check(void) {
+    if (TLIM >= 0 && cpu() > TLIM) {
+        fprintf(stderr, "time limit %.0fs reached: answer below is the best found, NOT proven optimal\n", TLIM);
+        print_answer();
+        exit(3);
+    }
+}
+static int c1_dfs(bs A, int a, bs Fr, bs Allow, bs Rg, int hint, bs PR) {
+    int rg;
+    st_c1++;
+    if ((st_c1 & 4095) == 0) time_check();
+    if (phase == 2) Rg = peelh(Rg, tieK, F, &hint);
+    rg = bcount(&Rg);
+    if (rg < F) return 0;
+    if (a >= 2) {
+        if (phase == 1) {
+            /* PR = parent's region peeled for this size; peeling is monotone under subsets */
+            int h2 = MAXN;
+            bs P = band(PR, Rg);
+            if (bcount(&P) >= needk(a)) {
+                P = peelh(P, a, needk(a), &h2);
+                if (process_c1(P, a)) return 1;
+            } else st_slice[a]++;
+        }
+        else if (a == tieK) {
+            st_slice[a]++;
+            if (rest(Rg, a, F)) { st_hit++; update_from(SOL); return 1; }
+            return 0;
+        }
+    }
+    {
+        bs rm; int any = 0;
+        bclr(&rm);
+        int t = rg - F;
+        if (t <= 32 && (t + 1) * rg < 2 * bcount(&Fr)) {
+            bs keep = lowloss(Fr, Rg, t);
+            rm = bandn(Fr, keep); any = !bempty(&rm);
+        } else {
+            FOREACH(x, Fr) { if (gdeg[x] > t && bandcount(&Rg, &adj[x]) > t) { bset(&rm, x); any = 1; } }
+        }
+        if (any) { Fr = bandn(Fr, rm); Allow = bandn(Allow, rm); }
+    }
+    if (phase == 1 && !bempty(&Fr)) {
+        int h3 = MAXN;
+        PR = peelh(Rg, a + 1, needk(a + 1), &h3);
+    }
+    while (!bempty(&Fr)) {
+        int u = bfirst(&Fr);
+        bs A2 = A, au, Fr2;
+        bset(&A2, u);
+        au = band(adj[u], Allow);
+        Fr2 = bor(Fr, au); Fr2 = bandn(Fr2, A2);
+        if (c1_dfs(A2, a + 1, Fr2, Allow, bandn(Rg, adj[u]), hint, PR)) return 1;
+        bunset(&Fr, u); bunset(&Allow, u);
+    }
+    return 0;
+}
+static int run_anchor(int c) {
+    bs A, Fr;
+    anchor = c;
+    bclr(&A); bset(&A, c);
+    Fr = band(adj[c], above[c]);
+    return c1_dfs(A, 1, Fr, above[c], bandn(ALL, nadj[c]), MAXN, ALL);
+}
+
+/* ------------------------------------------------------------------ local search heuristic */
+static uint64_t rs = 0x9E3779B97F4A7C15ULL;
+static uint64_t rnd(void) { rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17; return rs; }
+
+static int ls_k;
+static int tot[MAXN];
+/* vertices u not in K that can be added keeping comps <= ls_k */
+static bs addable_set(bs K) {
+    bs r = K, out, res;
+    int i;
+    for (i = 0; i < n; i++) tot[i] = 1;
+    while (!bempty(&r)) {
+        bs c = compof(bfirst(&r), r), nb;
+        int s = bcount(&c);
+        r = bandn(r, c);
+        bclr(&nb);
+        FOREACH(v, c) { nb = bor(nb, adj[v]); }
+        nb = bandn(nb, K);
+        FOREACH(u, nb) { tot[u] += s; }
+    }
+    out = bandn(ALL, K);
+    bclr(&res);
+    FOREACH(u, out) { if (tot[u] <= ls_k) bset(&res, u); }
+    return res;
+}
+static void greedy_fill(bs *K) {
+    for (;;) {
+        bs Ad = addable_set(*K);
+        int bestv = -1, bestsc = 1 << 30;
+        if (bempty(&Ad)) return;
+        FOREACH(u, Ad) {
+            int sc = bandcount(&adj[u], &Ad) * 64 + (int)(rnd() & 63);
+            if (sc < bestsc) { bestsc = sc; bestv = u; }
+        }
+        bset(K, bestv);
+    }
+}
+static void ls_eval(bs K) {
+    bs r = K, c1;
+    int mx = 0, f, y;
+    bclr(&c1);
+    while (!bempty(&r)) {
+        bs c = compof(bfirst(&r), r);
+        int s = bcount(&c);
+        if (s > mx) { mx = s; c1 = c; }
+        r = bandn(r, c);
+    }
+    f = bcount(&K) - mx;
+    if (f < F) return;
+    y = Lof(bandn(K, c1));
+    if (f > F || y > Y) { F = f; Y = y; bestR = bandn(K, c1); }
+}
+static int pick_random(bs S) {
+    int cnt = bcount(&S), r, i;
+    if (!cnt) return -1;
+    r = (int)(rnd() % (uint64_t)cnt);
+    for (i = 0; i < MW; i++) {
+        int pc = POPC(S.w[i]);
+        if (r < pc) {
+            uint64_t x = S.w[i];
+            while (r--) x &= x - 1;
+            return i * 64 + CTZ(x);
+        }
+        r -= pc;
+    }
+    return -1;
+}
+static void ls_run(int k, long iters) {
+    bs K, best;
+    int cur, bsz;
+    long it;
+    ls_k = k;
+    bclr(&K);
+    greedy_fill(&K);
+    ls_eval(K);
+    cur = bsz = bcount(&K); best = K;
+    for (it = 0; it < iters; it++) {
+        bs out = bandn(ALL, K), K2, M;
+        int u, s2;
+        u = pick_random(out);
+        if (u < 0) break;
+        K2 = K; bset(&K2, u);
+        M = compof(u, K2);
+        if (bcount(&M) > k) {
+            int target = 1 + (int)(rnd() % (uint64_t)k), sa = 1;
+            bs A, bnd;
+            bclr(&A); bset(&A, u);
+            while (sa < target) {
+                bs fr; int w;
+                bclr(&fr);
+                FOREACH(x, A) { fr = bor(fr, adj[x]); }
+                fr = band(fr, M); fr = bandn(fr, A);
+                w = pick_random(fr);
+                if (w < 0) break;
+                bset(&A, w); sa++;
+            }
+            bclr(&bnd);
+            FOREACH(x, A) { bnd = bor(bnd, adj[x]); }
+            bnd = band(bnd, M); bnd = bandn(bnd, A);
+            K2 = bandn(K2, bnd);
+        }
+        greedy_fill(&K2);
+        s2 = bcount(&K2);
+        ls_eval(K2);
+        if (s2 > bsz) { bsz = s2; best = K2; }
+        if (s2 >= cur || (s2 == cur - 1 && (rnd() & 7) == 0)) { K = K2; cur = s2; }
+        if (cur < bsz - 2) { K = best; cur = bsz; }
+    }
+}
+
+/* ------------------------------------------------------------------ input */
+static int read_graph(const char *fn) {
+    FILE *f = fopen(fn, "r");
+    int m, cnt = 0, c, i;
+    static unsigned char a[MAXN][MAXN];
+    if (!f) return -1;
+    if (fscanf(f, "%d %d", &n, &m) != 2) { fclose(f); return -2; }
+    if (n < 0 || n > MAXN) { fclose(f); return -3; }
+    memset(a, 0, sizeof a);
+    while (cnt < n * n && (c = fgetc(f)) != EOF) {
+        if (c == '0' || c == '1') {
+            int i2 = cnt / n, j = cnt % n;
+            if (c == '1' && i2 != j) { a[i2][j] = 1; a[j][i2] = 1; }
+            cnt++;
+        }
+    }
+    fclose(f);
+    {   /* relabel: decreasing degree */
+        int deg[MAXN], ord[MAXN], pos[MAXN], j;
+        for (i = 0; i < n; i++) { deg[i] = 0; for (j = 0; j < n; j++) deg[i] += a[i][j]; ord[i] = i; }
+        for (i = 1; i < n; i++) {
+            int x = ord[i];
+            j = i - 1;
+            while (j >= 0 && deg[ord[j]] < deg[x]) { ord[j + 1] = ord[j]; j--; }
+            ord[j + 1] = x;
+        }
+        for (i = 0; i < n; i++) { pos[ord[i]] = i; orig[i] = ord[i]; }
+        for (i = 0; i < n; i++) bclr(&adj[i]);
+        for (i = 0; i < n; i++)
+            for (j = 0; j < n; j++)
+                if (a[i][j]) bset(&adj[pos[i]], pos[j]);
+    }
+    NW = (n + 63) / 64; if (NW < 1) NW = 1;
+    bclr(&ALL);
+    for (i = 0; i < n; i++) { bset(&ALL, i); nadj[i] = adj[i]; bset(&nadj[i], i); gdeg[i] = bcount(&adj[i]); }
+    for (i = 0; i < n; i++) {
+        int w;
+        bclr(&above[i]);
+        for (w = i + 1; w < n; w++) bset(&above[i], w);
+    }
+    return 0;
+}
+
+static void reset_stats(void) {
+    int i;
+    st_mis = st_rest = st_comp = st_c1 = st_c2 = st_hit = 0;
+    for (i = 0; i < MAXN; i++) st_slice[i] = 0;
+}
+static void print_stats(const char *tag, double t) {
+    int i;
+    if (!VERB) return;
+    fprintf(stderr, "%s: F=%d Y=%d  c1=%ld c2=%ld rest=%ld comp=%ld mis=%ld hits=%ld  %.2fs\n",
+            tag, F, Y, st_c1, st_c2, st_rest, st_comp, st_mis, st_hit, t);
+    fprintf(stderr, "   C1 candidates by size:");
+    for (i = 2; i < MAXN; i++) if (st_slice[i]) fprintf(stderr, " k%d:%ld", i, st_slice[i]);
+    fprintf(stderr, "\n");
+}
+
+/* answer + witness: K = bestR + largest component of G - N[bestR];  S = V \ K (1-based input labels) */
+static void print_answer(void) {
+    bs N = bestR, O, rr, C, K, S;
+    int mx = 0, i, cnt = 0, fk, yk, idx[MAXN];
+    FOREACH(v, bestR) { N = bor(N, adj[v]); }
+    O = bandn(ALL, N); rr = O; bclr(&C);
+    while (!bempty(&rr)) {
+        bs c = compof(bfirst(&rr), rr);
+        int s = bcount(&c);
+        if (s > mx) { mx = s; C = c; }
+        rr = bandn(rr, c);
+    }
+    K = bor(bestR, C);
+    yk = maxcomp(K); fk = bcount(&K) - yk;
+    if (fk != F || yk != Y) fprintf(stderr, "INTERNAL WARNING: witness f=%d y=%d differs from F=%d Y=%d\n", fk, yk, F, Y);
+    S = bandn(ALL, K);
+    FOREACH(v, S) { idx[cnt++] = orig[v] + 1; }
+    for (i = 1; i < cnt; i++) {   /* insertion sort */
+        int x = idx[i], j = i - 1;
+        while (j >= 0 && idx[j] > x) { idx[j + 1] = idx[j]; j--; }
+        idx[j + 1] = x;
+    }
+    printf("Z=%d  X=%d\n", n - F, n - F - Y);
+    printf("S:");    /* second line: destroyed machines, 1-based input labels */
+    for (i = 0; i < cnt; i++) printf(" %d", idx[i]);
+    printf("\n");
+}
+
+int main(int argc, char **argv) {
+    const char *fn = NULL;
+    int i, complete = 1, a;
+    double t0, t1;
+    for (i = 1; i < argc; i++) {
+        if (!strcmp(argv[i], "-v")) VERB = 1;
+        else if (!strcmp(argv[i], "-vv")) VERB = 2;
+        else if (!strcmp(argv[i], "-t") && i + 1 < argc) TLIM = atof(argv[++i]);
+        else fn = argv[i];
+    }
+    if (!fn) { fprintf(stderr, "usage: %s FILE [-v]\n", argv[0]); return 1; }
+    if (read_graph(fn)) { fprintf(stderr, "cannot read %s\n", fn); return 1; }
+    t0 = cpu();
+    if (n == 0) { printf("Z=0  X=0\n"); printf("S:\n"); return 0; }
+    for (i = 0; i < n; i++) if (bcount(&adj[i]) != n - 1) complete = 0;
+    if (complete) { printf("Z=%d  X=0\n", n); printf("S:\n"); return 0; }
+
+    /* k = 1 slice: independent sets */
+    a = mis_opt(ALL);
+    F = a - 1; Y = 1;
+    {   /* Y from the independent set: L(I \ {v}) */
+        bs I = mis_sol;
+        bestR = I; bunset(&bestR, bfirst(&I));
+        FOREACH(v, mis_sol) { bs R = I; int y; bunset(&R, v); y = Lof(R); if (y > Y) { Y = y; bestR = R; } }
+    }
+    if (VERB) fprintf(stderr, "n=%d alpha=%d (mis nodes %ld) %.2fs\n", n, a, st_mis, cpu() - t0);
+
+    /* heuristic */
+    t1 = cpu();
+    {
+        /* sparse/medium graphs need a good (F,Y) start; dense ones are solved fast anyway */
+        long m2 = 0, iters;
+        double p, w;
+        for (i = 0; i < n; i++) m2 += gdeg[i];
+        p = n > 1 ? (double)m2 / ((double)n * (n - 1)) : 0.0;
+        w = (0.6 - p) / 0.3; if (w < 0) w = 0; if (w > 1) w = 1;
+        iters = 2000 + (long)(20000 * w);
+        int k, kmax = 12, lastgood = 1;
+        for (k = 2; k <= kmax && k < n; k++) {
+            int F0 = F;
+            ls_run(k, iters);
+            if (F > F0 || Y >= k) lastgood = k;
+            if (k > lastgood + 3) break;
+        }
+    }
+    if (VERB) fprintf(stderr, "heuristic: F=%d Y=%d  %.2fs\n", F, Y, cpu() - t1);
+
+    for (;;) {
+        int c, improved = 0, lim = 0;
+        /* main pass */
+        t1 = cpu(); reset_stats(); phase = 1;
+        for (c = 0; c < n; ) {
+            if (run_anchor(c)) { lim = c; continue; } /* (F,Y) changed: redo this anchor */
+            if (VERB > 1) fprintf(stderr, "  anchor %d done: c1=%ld %.2fs\n", c, st_c1, cpu() - t1);
+            c++;
+        }
+        print_stats("main pass", cpu() - t1);
+        /* anchors before the last change were checked for no-C2 ties at an older Y+1 */
+        while (lim > 0 && Y + 1 <= n) {
+            int F0 = F, hit = 0;
+            t1 = cpu(); reset_stats(); phase = 2; tieK = Y + 1;
+            for (c = 0; c < lim && !hit; c++) if (run_anchor(c)) hit = 1;
+            if (VERB) fprintf(stderr, "tie pass over anchors < %d:\n", lim);
+            print_stats("tie pass", cpu() - t1);
+            if (!hit) break;
+            if (F > F0) { improved = 1; break; } /* cannot happen if the main pass is right */
+            lim = n;
+        }
+        if (!improved) break;
+    }
+    if (VERB) fprintf(stderr, "total %.2fs\n", cpu() - t0);
+    print_answer();
+    return 0;
+}

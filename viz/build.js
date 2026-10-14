@@ -1,0 +1,28 @@
+// Builds the interactive page from page.html + sim.js + the 16-core results table.
+//   node viz/build.js [OUT_DIR]   (default: viz/dist)
+// Writes:
+//   parcalar-arama-agaci.html   page body only (for publishing as a Claude artifact)
+//   index.html                  standalone page (open directly in a browser)
+const fs = require("fs");
+const path = require("path");
+
+const here = __dirname;
+const root = path.join(here, "..");
+const out = process.argv[2] || path.join(here, "dist");
+
+const sim = fs.readFileSync(path.join(here, "sim.js"), "utf8").split("if (typeof module")[0];
+const tsv = fs.readFileSync(path.join(root, "results/AMD_Ryzen_7_7800X3D/16-cekirdek/ham.tsv"), "utf8");
+const results = tsv.trim().split(/\r?\n/).slice(1).map(l => {
+  const [f, z, x, st, s, w] = l.split("\t");
+  return [f, +z, +x, st, +s, +w];
+});
+
+let page = fs.readFileSync(path.join(here, "page.html"), "utf8");
+page = page.replace("// @@SIM@@", () => sim.trim());
+page = page.replace("/* @@RESULTS@@ */ []", () => JSON.stringify(results));
+
+fs.mkdirSync(out, { recursive: true });
+fs.writeFileSync(path.join(out, "parcalar-arama-agaci.html"), page);
+fs.writeFileSync(path.join(out, "index.html"),
+  `<!doctype html>\n<html lang="tr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n</head>\n<body style="margin:0">\n${page}\n</body>\n</html>\n`);
+console.log(`built ${results.length} result rows -> ${out}`);
