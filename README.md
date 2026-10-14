@@ -18,7 +18,7 @@ This quantity is the **vertex integrity** of the graph. Computing it is NP-hard 
   - a CP-SAT model (`cpsat.py`),
   - a random graph generator (`gen.py`).
 - **Benchmarks** on 88 random graphs (`n` = 100–200, edge density 20–90%), in [`bench/`](bench/).
-- **An interactive visualisation** of the search, serial and parallel, in Turkish and English, in [`viz/`](viz/).
+- **An interactive visualisation** of the search, serial and parallel, in Turkish and English, in [`viz/`](viz/). [Open it online](https://claude.ai/artifact/6hF2Nt3NyyTehcUAT8uChy), or open `viz/dist/index.html` locally.
 
 ## Results
 
