@@ -1,4 +1,4 @@
-// Simplified trace of the ParcalaR exact search on the 7-node example (small/example.txt).
+// Simplified trace of the ParcalaR exact search on the 7-node example (data/small/example.txt).
 // Produces serial and parallel event lists for the animation page.
 const N = 7;
 const EDGES = [[1,2],[1,6],[1,7],[2,6],[2,7],[3,4],[3,5],[4,5],[5,7]];

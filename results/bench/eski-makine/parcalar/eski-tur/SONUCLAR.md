@@ -1,4 +1,4 @@
-# ParçalaR sonuçları (bench/*.txt, rastgele G(n,M) test grafları)
+# ParçalaR sonuçları (data/bench/*.txt, rastgele G(n,M) test grafları; eski makine)
 
 İspatlı: 67/88.  (Arka planda uzun koşular sürüyordu; bu dosya o anki durumdur.)
 Hücre: Z/X.  `*` = süre sınırında bitmedi: geçerli çözüm, optimalliği ISPATLANMADI.

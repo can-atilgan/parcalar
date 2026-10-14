@@ -1,10 +1,10 @@
 # gen_results_md.py [MODE] [DIR]  (MODE = 16-cekirdek | tek-cekirdek)
-# Writes DIR/SONUCLAR.md from DIR/ham.tsv (default DIR: results/AMD_Ryzen_7_7800X3D/<MODE>).
+# Writes DIR/SONUCLAR.md from DIR/ham.tsv (default DIR: results/bench/AMD_Ryzen_7_7800X3D/parcalar/<MODE>).
 import os, sys
 MODE = sys.argv[1] if len(sys.argv) > 1 else '16-cekirdek'
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
-D = sys.argv[2] if len(sys.argv) > 2 else f'{ROOT}/results/AMD_Ryzen_7_7800X3D/{MODE}'
-BENCHDIR = os.environ.get('BENCH', f'{ROOT}/bench')
+D = sys.argv[2] if len(sys.argv) > 2 else f'{ROOT}/results/bench/AMD_Ryzen_7_7800X3D/parcalar/{MODE}'
+BENCHDIR = os.environ.get('BENCH', f'{ROOT}/data/bench')
 t = {}
 for l in open(f'{D}/ham.tsv', encoding='utf-8').read().splitlines()[1:]:
     p = l.split('\t'); t[p[0]] = p

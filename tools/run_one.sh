@@ -9,5 +9,5 @@ zx=$(grep -o 'Z=[0-9]*  X=[0-9]*' $tmp.out | tr -s ' ')
 pr=$(grep -q 'ispatlandi' $tmp.err && echo proven || echo NOT_PROVEN)
 vf=$(python3 $(dirname $0)/verify.py $F $tmp.out >/dev/null 2>&1 && echo feasible || echo VERIFY_FAIL)
 printf "%s\t%s\t%s\t%.1f\t%s\n" "$name" "$zx" "$pr" "$(echo "$en - $st" | bc)" "$vf"
-cp $tmp.out $(dirname $0)/../results/$name.out
+cp $tmp.out $(dirname $0)/../results/bench/eski-makine/parcalar/eski-tur/ciktilar/$name.out
 rm -f $tmp $tmp.out $tmp.err

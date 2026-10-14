@@ -1,13 +1,13 @@
 # ParçalaR sonuçları — MEBtest grafları, AMD Ryzen 7 7800X3D, 16 çekirdek
 
-- **Graflar:** `MEBtest/` (hocanın test grafları, 2014). Aynı adlı `bench/` graflarından farklıdır ve iç içedir:
+- **Graflar:** `data/MEBtest/` (hocanın test grafları, 2014). Aynı adlı `data/bench/` graflarından farklıdır ve iç içedir:
   her yoğunluk, bir altındakinin bütün kenarlarını içerir.
-- **Kapsam:** `bench/` 16 çekirdek turunda koşulan dosyaların aynısı (n ≥ 120 için %20, n ≥ 160 için %30 koşulmadı), artı 12020.
+- **Kapsam:** `data/bench/` 16 çekirdek turunda koşulan dosyaların aynısı (n ≥ 120 için %20, n ≥ 160 için %30 koşulmadı), artı 12020.
 - **İşlemci:** AMD Ryzen 7 7800X3D 8-Core Processor (8 fiziksel çekirdek, 16 mantıksal), Windows 10 Pro
 - **Derleyici:** gcc 16.2.0 (WinLibs, MinGW-w64 UCRT)
 - **Derleme:** `gcc -O2 -march=native -Wa,-muse-unaligned-vector-move -fopenmp -static final/parcalar.c`
 - **Koşu:** `OMP_NUM_THREADS=16`, `-t 600`, dosyalar tek tek, sırayla:
-  `BENCH=MEBtest SKIP='^(1[2-9]|20)020$|^(1[6-9]|20)030$' tools/windows/run_bench.sh <exe> MEBsonuclar 16`
+  `BENCH=data/MEBtest SKIP='^(1[2-9]|20)020$|^(1[6-9]|20)030$' tools/windows/run_bench.sh <exe> results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek 16`
 - **Durum:** 75/88 dosya koşuldu, 74/75 ispatlı.
 - **Doğrulama:** her çıktı `tools/verify.py` ile kontrol edildi, hepsi UYGUN (|S| = X ve X + Y = Z).
 
@@ -27,9 +27,9 @@ Hücre: Z/X (süre, sn). `—` = bu turda koşulmadı. `*` = süre sınırında 
 | 190 | — | — | 175/170 (122.78) | 178/175 (1.12) | 181/177 (0.18) | 183/180 (0.06) | 185/180 (0.06) | 187/182 (0.07) |
 | 200 | — | — | 184/179 (54.47) | 188/183 (4.43) | 191/187 (0.28) | 193/190 (0.07) | 195/190 (0.06) | 197/192 (0.07) |
 
-## Ayrıntı ve `bench/` ile karşılaştırma
+## Ayrıntı ve `data/bench/` ile karşılaştırma
 
-`süre` = programın ölçtüğü süre (dosya okuma + arama + çıktı yazma + öz-kontrol). Son iki sütun aynı adlı `bench/` grafının sonucu (farklı graf).
+`süre` = programın ölçtüğü süre (dosya okuma + arama + çıktı yazma + öz-kontrol). Son iki sütun aynı adlı `data/bench/` grafının sonucu (farklı graf).
 
 | dosya | Z | X | durum | süre (sn) | bench Z/X | bench süre (sn) |
 |---|---|---|---|---|---|---|
@@ -109,13 +109,13 @@ Hücre: Z/X (süre, sn). `—` = bu turda koşulmadı. `*` = süre sınırında 
 | 20080.txt | 195 | 190 | ispatli | 0.03 | 195/190 | 0.06 |
 | 20090.txt | 197 | 192 | ispatli | 0.04 | 196/195 | 0.05 |
 
-Toplam süre (koşulan 75 dosya): 1534.7 sn (`bench/` aynı dosyalar: 852.0 sn).
+Toplam süre (koşulan 75 dosya): 1534.7 sn (`data/bench/` aynı dosyalar: 852.0 sn).
 
 Çıktılar (`Z/X` ve `S:` listesi, stderr öz-kontrol): `ciktilar/<dosya>.out`, `ciktilar/<dosya>.err`. Ham ölçümler: `ham.tsv`.
 
 ## Notlar
 
-- **10050:** Z = 91, X = 85. Dört bağımsız kesin çözücü (`alternatif_cozuculer/bnb`, `bnb_b`, `rds`, `rds_b`) ve sezgisel çözücü (`heur`, 3 farklı başlangıç) aynı sonucu verdi. Notlarda ödevin bilinen değeri olarak geçen "(10/5)" (Z = 90) `bench/10050` ile tutuyor, MEBtest ile değil.
-- **12020:** 600 sn sınırında ispatlanamadı. Yazılan çözüm (Z = 94, X = 88, Y = 6) geçerli; daha iyisinin olmadığı gösterilemedi. Ayrı koşuldu: `BENCH=MEBtest SKIP='^(1[3-9]|20)020$|^(1[6-9]|20)030$' tools/windows/run_bench.sh <exe> MEBsonuclar 16`.
+- **10050:** Z = 91, X = 85. Dört bağımsız kesin çözücü (`alternatif_cozuculer/bnb`, `bnb_b`, `rds`, `rds_b`) ve sezgisel çözücü (`heur`, 3 farklı başlangıç) aynı sonucu verdi. Notlarda ödevin bilinen değeri olarak geçen "(10/5)" (Z = 90) `data/bench/10050` ile tutuyor, MEBtest ile değil.
+- **12020:** 600 sn sınırında ispatlanamadı. Yazılan çözüm (Z = 94, X = 88, Y = 6) geçerli; daha iyisinin olmadığı gösterilemedi. Ayrı koşuldu: `BENCH=data/MEBtest SKIP='^(1[3-9]|20)020$|^(1[6-9]|20)030$' tools/windows/run_bench.sh <exe> results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek 16`.
 - **15050:** ödevin bilinen değeri "(11/4)" ile tutuyor (Z = 139, X = 135).
 - **12080 için başka bir programın cevabı:** `Z=115 X=114` (Y = 1, 6 bağımsız bilgisayar kalıyor) 12020–12080 graflarında geçerli, 12090'da geçersiz. Z = 115 yalnızca 12080'in optimumuyla tutuyor; ancak aynı Z, 111 bilgisayar parçalanarak da elde ediliyor (Y = 4). Ödevin eşitlik kuralı en az bilgisayar parçalayan çözümü istediği için doğru cevap **Z = 115, X = 111**.

@@ -17,17 +17,20 @@ This quantity is the **vertex integrity** of the graph. Barefoot, Entringer and 
   - a brute-force oracle for small graphs (`brute.c`),
   - a CP-SAT model (`cpsat.py`),
   - a random graph generator (`gen.py`).
-- **Benchmarks** on 88 random graphs (`n` = 100–200, edge density 20–90%), in [`bench/`](bench/).
+- **Benchmarks** on two sets of 88 graphs (`n` = 100–200, edge density 20–90%): random graphs generated for this study in [`data/bench/`](data/bench/), and the instructor's test graphs in [`data/MEBtest/`](data/MEBtest/).
 - **An interactive visualisation** of the search, serial and parallel, in Turkish and English, in [`viz/`](viz/). [Open it online](https://claude.ai/artifact/6hF2Nt3NyyTehcUAT8uChy), or open `viz/dist/index.html` locally.
 
 ## Results
 
-| Run | Machine | Proven optimal | Table |
-|---|---|---|---|
-| Original | low-power machine, 1 core, 120 s limit (some long runs on 4 cores) | 67 / 88 | [`results/SONUCLAR.md`](results/SONUCLAR.md) |
-| Current | AMD Ryzen 7 7800X3D, 16 threads, 600 s limit | 74 / 74 run (14 sparsest not run yet) | [`results/AMD_Ryzen_7_7800X3D/16-cekirdek/SONUCLAR.md`](results/AMD_Ryzen_7_7800X3D/16-cekirdek/SONUCLAR.md) |
+Results are stored as `results/<graph set>/<machine>/<method>/<setting>/`. Each folder has a `SONUCLAR.md` table, raw timings and every program output.
 
-The current run used GCC 16.2.0 (WinLibs, MinGW-w64) with this command:
+| Graphs | Machine | Setting | Proven optimal | Table |
+|---|---|---|---|---|
+| `data/bench` | low-power machine | 1 core, 120 s limit (some long runs on 4 cores) | 67 / 88 | [`results/bench/eski-makine/parcalar/eski-tur`](results/bench/eski-makine/parcalar/eski-tur/SONUCLAR.md) |
+| `data/bench` | AMD Ryzen 7 7800X3D | 16 threads, 600 s limit | 74 / 74 run (14 sparsest not run) | [`results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
+| `data/MEBtest` | AMD Ryzen 7 7800X3D | 16 threads, 600 s limit | 74 / 75 run (12020 not proven in 600 s) | [`results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
+
+The 7800X3D runs used GCC 16.2.0 (WinLibs, MinGW-w64) with this command:
 
 ```
 gcc -O2 -march=native -Wa,-muse-unaligned-vector-move -fopenmp -static final/parcalar.c -o parcalar
@@ -45,10 +48,10 @@ gcc -O2 -march=native parcalar.c -o parcalar              # single thread
 gcc -O2 -march=native -fopenmp parcalar.c -o parcalar     # all cores
 ./parcalar 10020.txt            # or: ./parcalar 100 20   -> reads 10020.txt
 ./parcalar 10020.txt -t 600     # time limit: prints the best valid answer, flagged as unproven
-python3 tools/verify.py bench/10020.txt output.txt         # independent feasibility check
+python3 tools/verify.py data/bench/10020.txt output.txt    # independent feasibility check
 ```
 
-The output is `Z=<z>  X=<x>`, followed by `S: ...` (the wiped computers, numbered from 1). The input format is `n m` on the first line, then the `n × n` 0/1 adjacency matrix. See [`final/README.md`](final/README.md) for details (in Turkish) and [`small/example.txt`](small/example.txt) for the 7-node example (answer `Z=4 X=1`, `S: 7`).
+The output is `Z=<z>  X=<x>`, followed by `S: ...` (the wiped computers, numbered from 1). The input format is `n m` on the first line, then the `n × n` 0/1 adjacency matrix. See [`final/README.md`](final/README.md) for details (in Turkish) and [`data/small/example.txt`](data/small/example.txt) for the 7-node example (answer `Z=4 X=1`, `S: 7`).
 
 ## Repository layout
 
@@ -56,8 +59,10 @@ The output is `Z=<z>  X=<x>`, followed by `S: ...` (the wiped computers, numbere
 |---|---|
 | `final/` | the exact solver |
 | `alternatif_cozuculer/` | alternative solvers (`bnb`, `rds`, …) and a heuristic, each with NOTES |
-| `bench/` | 88 random test graphs `{n}{density}.txt`, generated for this study |
-| `results/` | result tables, raw timings and every program output |
+| `data/bench/` | 88 random test graphs `{n}{density}.txt`, generated for this study |
+| `data/MEBtest/` | the instructor's 88 test graphs (2014), same names; nested by density |
+| `data/small/` | the 7-node example from the assignment |
+| `results/` | `<graph set>/<machine>/<method>/<setting>/`: result tables, raw timings and every program output |
 | `tools/` | verifier, brute force, CP-SAT model, generator; `tools/windows/` has the Windows benchmark scripts |
 | `viz/` | interactive page: `page.html` + `sim.js`, built with `node viz/build.js` into `viz/dist/index.html` |
 

@@ -378,7 +378,7 @@ const I18N = {
     done: p => `Sonuç: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. ${p.S.join(", ")} parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor.`,
     t_h: "Güncel testler",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 çekirdek · üretilen graflar ${b}/88, MEBtest ${m}/88 dosya`,
-    dtabs_aria: "Test grafları", dtab_bench: "Üretilen graflar (bench/)", dtab_meb: "MEBtest (hocanın grafları)",
+    dtabs_aria: "Test grafları", dtab_bench: "Üretilen graflar (data/bench)", dtab_meb: "MEBtest (hocanın grafları)",
     env: `<dt>İşlemci</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 fiziksel çekirdek, 16 mantıksal (SMT)</span></dd>
       <dt>Koşu</dt><dd><b>16 çekirdek</b>: 16 iş parçacığı (<code>OMP_NUM_THREADS=16</code>), tüm mantıksal çekirdekler</dd>
       <dt>Sınır</dt><dd>Dosya başına 600 sn (<code>-t 600</code>). Dosyalar tek tek, sırayla koşuldu.</dd>
@@ -393,9 +393,9 @@ const I18N = {
     scale_a: "hücre rengi: süre", scale_b: "0.04 sn → 240 sn (log)",
     grid_aria: "Güncel test sonuçları, 16 çekirdek",
     notes_common: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (okuma + arama + çıktı yazma + öz-kontrol). <b>*</b> 600 sn sınırında ispatlanamadı. <b>—</b> bu turda koşulmayan dosya.</p>`,
-    notes_bench: `<p>Bu graflar bu çalışma için üretilen rastgele G(n, p) graflarıdır (<code>bench/</code>): dosya adı n ve kenar yüzdesini verir (ör. 14030 → n = 140, %30). Seyreklik arttıkça arama ağacı büyüyor; koşulmayanlar en seyrek graflar.</p>
+    notes_bench: `<p>Bu graflar bu çalışma için üretilen rastgele G(n, p) graflarıdır (<code>data/bench/</code>): dosya adı n ve kenar yüzdesini verir (ör. 14030 → n = 140, %30). Seyreklik arttıkça arama ağacı büyüyor; koşulmayanlar en seyrek graflar.</p>
       <p>Bağımsız doğrulama (<code>tools/verify.py</code>) bu tabloda yer almıyor, ayrıca yapılacak.</p>`,
-    notes_meb: `<p>Bu graflar hocanın 2014 tarihli test graflarıdır (<code>MEBtest/</code>). Aynı adlı <code>bench/</code> graflarından farklıdırlar ve iç içedirler: her yoğunluk, bir altındakinin bütün kenarlarını içerir. Koşulan dosyalar <code>bench/</code> sekmesindekilerle aynı, artı 12020.</p>
+    notes_meb: `<p>Bu graflar hocanın 2014 tarihli test graflarıdır (<code>data/MEBtest/</code>). Aynı adlı <code>data/bench/</code> graflarından farklıdırlar ve iç içedirler: her yoğunluk, bir altındakinin bütün kenarlarını içerir. Koşulan dosyalar <code>data/bench/</code> sekmesindekilerle aynı, artı 12020.</p>
       <p>10050'nin sonucu (Z = 91) dört bağımsız kesin çözücü ve sezgisel çözücüyle ayrıca doğrulandı. 12020 dışında koşulan her dosya ispatlandı (12020 600 sn sınırında bitmedi, yazılan çözüm geçerli). Bütün çıktılar <code>tools/verify.py</code> ile kontrol edildi.</p>`,
     th_light: "Açık", th_dark: "Koyu",
     sec: "sn", na: f => `${f}.txt bu turda koşulmadı`, proven: "ispatlı", unproven: "ispatsız",
@@ -473,7 +473,7 @@ const I18N = {
     done: p => `Result: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. Wiping ${p.S.join(", ")} splits the network into {1, 2, 6} and {3, 4, 5}.`,
     t_h: "Current tests",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 cores · generated graphs ${b}/88, MEBtest ${m}/88 files`,
-    dtabs_aria: "Test graphs", dtab_bench: "Generated graphs (bench/)", dtab_meb: "MEBtest (instructor's graphs)",
+    dtabs_aria: "Test graphs", dtab_bench: "Generated graphs (data/bench)", dtab_meb: "MEBtest (instructor's graphs)",
     env: `<dt>CPU</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 physical cores, 16 logical (SMT)</span></dd>
       <dt>Run</dt><dd><b>16 cores</b>: 16 threads (<code>OMP_NUM_THREADS=16</code>), all logical cores</dd>
       <dt>Limit</dt><dd>600 s per file (<code>-t 600</code>). Files were run one at a time.</dd>
@@ -488,9 +488,9 @@ const I18N = {
     scale_a: "cell colour: time", scale_b: "0.04 s → 240 s (log)",
     grid_aria: "Current test results, 16 cores",
     notes_common: `<p>Cell: <b>Z/X</b> and the time measured by the program (read + search + output + self-check). <b>*</b> not proven within the 600 s limit. <b>—</b> marks a file not run in this round.</p>`,
-    notes_bench: `<p>These are random G(n, p) graphs generated for this study (<code>bench/</code>): the file name gives n and the edge percentage (e.g. 14030 → n = 140, 30%). The sparser the graph, the larger the search tree; the files not run are the sparsest ones.</p>
+    notes_bench: `<p>These are random G(n, p) graphs generated for this study (<code>data/bench/</code>): the file name gives n and the edge percentage (e.g. 14030 → n = 140, 30%). The sparser the graph, the larger the search tree; the files not run are the sparsest ones.</p>
       <p>Independent verification (<code>tools/verify.py</code>) is not part of this table and will be done separately.</p>`,
-    notes_meb: `<p>These are the instructor's test graphs from 2014 (<code>MEBtest/</code>). They differ from the <code>bench/</code> graphs with the same names and are nested: each density contains every edge of the one below it. The same files were run as in the <code>bench/</code> tab, plus 12020.</p>
+    notes_meb: `<p>These are the instructor's test graphs from 2014 (<code>data/MEBtest/</code>). They differ from the <code>data/bench/</code> graphs with the same names and are nested: each density contains every edge of the one below it. The same files were run as in the <code>data/bench/</code> tab, plus 12020.</p>
       <p>The result for 10050 (Z = 91) was also confirmed with four independent exact solvers and the heuristic. Every file that was run was proven optimal except 12020, which did not finish within 600 s (the answer it wrote is valid). Every output was checked with <code>tools/verify.py</code>.</p>`,
     th_light: "Light", th_dark: "Dark",
     sec: "s", na: f => `${f}.txt was not run in this round`, proven: "proven", unproven: "not proven",

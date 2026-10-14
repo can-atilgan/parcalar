@@ -1,4 +1,4 @@
-// Builds the interactive page from page.html + sim.js + the 16-core results tables (bench/ and MEBtest/).
+// Builds the interactive page from page.html + sim.js + the 16-core results tables (data/bench and data/MEBtest).
 //   node viz/build.js [OUT_DIR]   (default: viz/dist)
 // Writes:
 //   parcalar-arama-agaci.html   page body only (for publishing as a Claude artifact)
@@ -11,7 +11,7 @@ const root = path.join(here, "..");
 const out = process.argv[2] || path.join(here, "dist");
 
 const sim = fs.readFileSync(path.join(here, "sim.js"), "utf8").split("if (typeof module")[0];
-const tsv = fs.readFileSync(path.join(root, "results/AMD_Ryzen_7_7800X3D/16-cekirdek/ham.tsv"), "utf8");
+const tsv = fs.readFileSync(path.join(root, "results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/ham.tsv"), "utf8");
 const results = tsv.trim().split(/\r?\n/).slice(1).map(l => {
   const [f, z, x, st, s, w] = l.split("\t");
   return [f, +z, +x, st, +s, +w];
@@ -21,7 +21,7 @@ const readTsv = f => fs.existsSync(f) ? fs.readFileSync(f, "utf8").trim().split(
   const [f0, z, x, st, s, w] = l.split("\t");
   return [f0, +z, +x, st, +s, +w];
 }) : [];
-const meb = readTsv(path.join(root, "MEBsonuclar/ham.tsv"));
+const meb = readTsv(path.join(root, "results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/ham.tsv"));
 
 let page = fs.readFileSync(path.join(here, "page.html"), "utf8");
 page = page.replace("// @@SIM@@", () => sim.trim());
