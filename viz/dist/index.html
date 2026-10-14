@@ -13,19 +13,19 @@
 <style>
 /* Layout: one reading column for the problem; a two-column workbench (pseudocode | animation) below; results tucked in a disclosure. */
 :root {
-  --bg: #fbf7ef;          /* ivory */
-  --surface: #f4ebdc;
-  --ghost: #ebdfcc;
-  --line: #e0cfb6;
-  --line-strong: #b9a184;
+  --bg: #f1e6d2;          /* beige */
+  --surface: #e8dac0;
+  --ghost: #dfcfb2;
+  --line: #d4c09f;
+  --line-strong: #a88f6f;
   --ink: #2a1e14;
-  --muted: #7a6550;
+  --muted: #6b5743;
   --accent: #d9631e;      /* orange */
   --on-accent: #fffaf2;
   --w0: #d9631e;          /* thread 1: orange */
   --w1: #b8861a;          /* thread 2: ochre */
   --w2: #9a3a1a;          /* thread 3: brick */
-  --r-fill: #f3d9a4;
+  --r-fill: #efcf8f;
   --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
@@ -60,9 +60,9 @@ header { display: grid; gap: 14px; }
 .gh { display: inline-flex; align-items: center; gap: 7px; font: 600 0.85rem var(--body); color: var(--ink); text-decoration: none; border: 1px solid var(--line-strong); border-radius: 6px; padding: 5px 11px; }
 .gh:hover { border-color: var(--accent); color: var(--accent); }
 .gh svg { width: 16px; height: 16px; fill: currentColor; }
-.lang { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
-.lang button { font: 600 0.8rem var(--mono); letter-spacing: 0.06em; color: var(--muted); background: transparent; border: 0; padding: 5px 11px; cursor: pointer; }
-.lang button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.lang, .theme { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
+.lang button, .theme button { font: 600 0.8rem var(--mono); letter-spacing: 0.06em; color: var(--muted); background: transparent; border: 0; padding: 5px 11px; cursor: pointer; }
+.lang button[aria-pressed="true"], .theme button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 code, .mono { font-family: var(--mono); font-size: 0.9em; }
 .formula { font-family: var(--mono); background: var(--surface); padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
 
@@ -220,6 +220,10 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
       <span class="eyebrow" data-i18n="eyebrow"></span>
       <div class="toplinks">
         <a class="gh" href="https://github.com/can-atilgan/parcalar" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span data-i18n="github"></span></a>
+        <div class="theme" role="group" aria-label="Tema / Theme">
+          <button type="button" id="theme-light" aria-pressed="false"></button>
+          <button type="button" id="theme-dark" aria-pressed="false"></button>
+        </div>
         <div class="lang" role="group" aria-label="Dil / Language">
           <button type="button" id="lang-tr" aria-pressed="true">TR</button>
           <button type="button" id="lang-en" aria-pressed="false">EN</button>
@@ -520,6 +524,7 @@ const I18N = {
     notes: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (okuma + arama + çıktı yazma + öz-kontrol). Koşulan her dosyada optimallik ispatlandı. <b>—</b> bu turda koşulmayan dosya.</p>
       <p>Test grafları rastgele G(n, p): dosya adı n ve kenar yüzdesi (ör. 14030 → n = 140, %30). Seyreklik arttıkça arama ağacı büyüyor. Koşulmayanlar en seyrek graflar.</p>
       <p>Bağımsız doğrulama (<code>tools/verify.py</code>) bu tabloda yer almıyor, ayrıca yapılacak.</p>`,
+    th_light: "Açık", th_dark: "Koyu",
     sec: "sn", na: f => `${f}.txt bu turda koşulmadı`, proven: "ispatlı", unproven: "ispatsız",
   },
   en: {
@@ -604,12 +609,17 @@ const I18N = {
     notes: `<p>Cell: <b>Z/X</b> and the time measured by the program (read + search + output + self-check). Every file that was run was proven optimal. <b>—</b> marks a file not run in this round.</p>
       <p>The test graphs are random G(n, p): the file name gives n and the edge percentage (e.g. 14030 → n = 140, 30%). The sparser the graph, the larger the search tree. The files not run are the sparsest ones.</p>
       <p>Independent verification (<code>tools/verify.py</code>) is not part of this table and will be done separately.</p>`,
+    th_light: "Light", th_dark: "Dark",
     sec: "s", na: f => `${f}.txt was not run in this round`, proven: "proven", unproven: "not proven",
   },
 };
 let lang = "tr";
 try { const s = localStorage.getItem("parcalar-lang"); if (s === "tr" || s === "en") lang = s; else if (!/^tr/i.test(navigator.language || "")) lang = "en"; } catch (e) { if (!/^tr/i.test(navigator.language || "")) lang = "en"; }
 const t = k => I18N[lang][k];
+let theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+try { const s = localStorage.getItem("parcalar-theme"); if (s === "light" || s === "dark") theme = s; } catch (e) {}
+function applyTheme() { document.documentElement.setAttribute("data-theme", theme); }
+applyTheme();
 
 /* ---------------- shared helpers ---------------- */
 const NS = "http://www.w3.org/2000/svg";
@@ -912,6 +922,10 @@ function applyStatic() {
   document.getElementById("lang-tr").setAttribute("aria-pressed", lang === "tr");
   document.getElementById("lang-en").setAttribute("aria-pressed", lang === "en");
   document.title = lang === "tr" ? "ParçalaR Arama Ağacı" : "ParçalaR Search Tree";
+  for (const m of ["light", "dark"]) {
+    const b = document.getElementById("theme-" + m);
+    b.textContent = t("th_" + m); b.setAttribute("aria-pressed", theme === m);
+  }
 }
 applyStatic();
 
@@ -980,6 +994,11 @@ function setLang(l) {
 }
 document.getElementById("lang-tr").addEventListener("click", () => setLang("tr"));
 document.getElementById("lang-en").addEventListener("click", () => setLang("en"));
+for (const m of ["light", "dark"]) document.getElementById("theme-" + m).addEventListener("click", () => {
+  theme = m; applyTheme();
+  try { localStorage.setItem("parcalar-theme", m); } catch (e) {}
+  for (const k of ["light", "dark"]) document.getElementById("theme-" + k).setAttribute("aria-pressed", theme === k);
+});
 
 const start = location.hash === "#paralel" ? "paralel" : "seri";
 select(start);
