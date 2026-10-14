@@ -46,6 +46,8 @@ h3 { font-size: 1.05rem; font-weight: 700; }
 p { margin: 0; }
 a { color: var(--accent); }
 .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.credits { display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 0.88rem; color: var(--muted); }
+.credits b { color: var(--ink); font-weight: 600; }
 .lede { max-width: 64ch; color: var(--muted); font-size: 1.05rem; }
 header { display: grid; gap: 14px; }
 .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -233,6 +235,7 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
     </div>
     <h1 data-i18n="h1"></h1>
     <p class="lede" data-i18n="lede"></p>
+    <p class="credits" data-i18n="credits"></p>
   </header>
 
   <section class="problem" aria-labelledby="p-h">
@@ -449,6 +452,7 @@ const I18N = {
     eyebrow: "Graf bütünlüğü · kesin çözücü",
     github: "GitHub'da kaynak kod",
     h1: "ParçalaR arama ağacı",
+    credits: `<span>Soran: <b>Murat Erşen Berberler</b></span><span>Çözen: <b>Can Atılgan</b>, <b>Claude Opus 5.5</b></span>`,
     lede: "Bir bilgisayar ağını en ucuza parçalamanın kesin çözümü nasıl bulunuyor ve ispatlanıyor: problem, algoritmanın iskeleti ve ödevdeki 7 bilgisayarlık örnek üzerinde seri ve paralel arama, adım adım.",
     p_h: "Problem",
     p1: "Bir ağdaki bazı bilgisayarların diskini parçalıyoruz. Parçalanan bilgisayarlar kümesine <b>S</b> diyelim. <b>X = |S|</b> parçalanan bilgisayar sayısı, <b>Y</b> ise geriye kalan ağdaki en büyük bağlı parçanın boyu. Amaç <span class=\"formula\">Z = X + Y</span> değerini en küçük yapmak. Aynı Z'yi veren çözümler arasında en az bilgisayar parçalayanı seçiyoruz.",
@@ -540,6 +544,7 @@ const I18N = {
     eyebrow: "Vertex integrity · exact solver",
     github: "Source on GitHub",
     h1: "ParçalaR search tree",
+    credits: `<span>Posed by: <b>Murat Erşen Berberler</b></span><span>Solved by: <b>Can Atılgan</b>, <b>Claude Opus 5.5</b></span>`,
     lede: "How the exact cheapest way to break up a computer network is found and proven optimal: the problem, the skeleton of the algorithm, and a step-by-step serial and parallel search on the 7-computer example from the assignment.",
     p_h: "The problem",
     p1: "We wipe the disks of some computers in a network. Call the set of wiped computers <b>S</b>. <b>X = |S|</b> is the number of wiped computers and <b>Y</b> is the size of the largest connected part of what remains. The goal is to make <span class=\"formula\">Z = X + Y</span> as small as possible. Among solutions with the same Z, the one that wipes the fewest computers is chosen.",
