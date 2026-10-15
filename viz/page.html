@@ -299,8 +299,8 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
         </div>
       </div>
       <div class="tabs" role="tablist" data-i18n-aria="dtabs_aria">
-        <button class="tab" role="tab" id="dtab-bench" aria-controls="grid" aria-selected="true"><span data-i18n="dtab_bench"></span></button>
-        <button class="tab" role="tab" id="dtab-meb" aria-controls="grid" aria-selected="false" tabindex="-1"><span data-i18n="dtab_meb"></span></button>
+        <button class="tab" role="tab" id="dtab-meb" aria-controls="grid" aria-selected="true"><span data-i18n="dtab_meb"></span></button>
+        <button class="tab" role="tab" id="dtab-bench" aria-controls="grid" aria-selected="false" tabindex="-1"><span data-i18n="dtab_bench"></span></button>
       </div>
       <div class="method-row">
         <span class="method-lbl" id="method-lbl" data-i18n="method_lbl"></span>
@@ -333,7 +333,7 @@ const ILS = { bench: RESULTS_BENCH_ILS, meb: RESULTS_MEB_ILS };
 const SEED = { bench: [], meb: RESULTS_MEB_SEED };
 const DATA = { bench: RESULTS, meb: RESULTS_MEB };
 let method = "exact";
-let dataset = "bench";
+let dataset = "meb";
 
 /* ---------------- text ---------------- */
 const fmt = a => "{" + a.join(", ") + "}";
@@ -411,7 +411,7 @@ const I18N = {
     passend: p => p.changed ? `Geçiş ${p.pass} bitti ama (F, Y) değişti. Önceki başlangıç düğümleri eski değerle tarandığı için yeni bir geçiş gerekiyor.` : `<b>Geçiş ${p.pass} hiç değişmeden bitti.</b> Her başlangıç düğümü aynı (F, Y) = (${p.F}, ${p.Y}) ile tarandı ve hiçbiri daha iyisini vermedi: bu, optimallik ispatı.`,
     done: p => `Sonuç: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. ${p.S.join(", ")} parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor.`,
     t_h: "Güncel testler",
-    sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 çekirdek · üretilen graflar ${b}/88, MEBtest ${m}/88 dosya`,
+    sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 çekirdek · MEBtest ${m}/88, üretilen graflar ${b}/88 dosya`,
     method_lbl: "Yöntem · birini seçin", mt_exact: "Kesin çözücü", mt_exact_s: "16 çekirdek · ispatlar",
     mt_seed: "ILS başlangıçlı kesin", mt_seed_s: "16 çekirdek · ILS + ispat", mt_ils: "Sezgisel ILS", mt_ils_s: "tek çekirdek · ispatsız",
     mt_ils_na: "Bu graf setinde henüz koşulmadı",
@@ -522,7 +522,7 @@ const I18N = {
     passend: p => p.changed ? `Pass ${p.pass} is over but (F, Y) changed. Earlier start vertices were scanned with the old value, so another pass is needed.` : `<b>Pass ${p.pass} finished without any change.</b> Every start vertex was scanned with the same (F, Y) = (${p.F}, ${p.Y}) and none did better: that is the proof of optimality.`,
     done: p => `Result: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. Wiping ${p.S.join(", ")} splits the network into {1, 2, 6} and {3, 4, 5}.`,
     t_h: "Current tests",
-    sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 cores · generated graphs ${b}/88, MEBtest ${m}/88 files`,
+    sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 cores · MEBtest ${m}/88, generated graphs ${b}/88 files`,
     method_lbl: "Method · pick one", mt_exact: "Exact solver", mt_exact_s: "16 cores · proves",
     mt_seed: "Exact, ILS start", mt_seed_s: "16 cores · ILS + proof", mt_ils: "ILS heuristic", mt_ils_s: "single core · no proof",
     mt_ils_na: "Not run on this graph set yet",
