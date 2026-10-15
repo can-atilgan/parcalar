@@ -210,9 +210,9 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
 .method button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; min-width: 150px; padding: 8px 14px 9px; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line-strong); border-radius: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
 .method button .mt-t { font: 600 0.9rem var(--body); }
 .method button .mt-s { font: 0.72rem var(--mono); color: var(--muted); }
-.method button:hover:not(:disabled) { border-color: var(--accent); background: var(--surface); }
+.method button:hover:not(:disabled):not([aria-pressed="true"]) { border-color: var(--accent); background: var(--surface); }
 .method button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.method button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.method button[aria-pressed="true"] { cursor: default; background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .method button[aria-pressed="true"] .mt-s { color: var(--on-accent); opacity: 0.85; }
 .method button[aria-pressed="true"] .mt-t::before { content: "● "; }
 .method button:disabled { opacity: 0.45; border-style: dashed; cursor: not-allowed; }
