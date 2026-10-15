@@ -1,0 +1,181 @@
+k=  1 keep=  4 f=  3 t=0.031s iters=7264
+k=  2 keep=  6 f=  4 t=0.031s iters=115264
+k=  3 keep=  7 f=  4 t=0.031s iters=115264
+k=  4 keep=  7 f=  3 t=0.031s iters=115201
+k=  5 keep=  7 f=  2 t=0.031s iters=1800
+k=  6 keep=  8 f=  2 t=0.031s iters=1800
+k=  7 keep=  8 f=  1 t=0.000s iters=450
+k=  8 keep=  9 f=  1 t=0.000s iters=450
+k=  9 keep= 10 f=  1 t=0.000s iters=450
+k= 10 keep= 11 f=  1 t=0.000s iters=450
+k= 11 keep= 12 f=  1 t=0.000s iters=450
+k= 12 keep= 13 f=  1 t=0.000s iters=450
+k= 13 keep= 14 f=  1 t=0.000s iters=450
+k= 14 keep= 15 f=  1 t=0.000s iters=450
+k= 15 keep= 16 f=  1 t=0.000s iters=450
+k= 16 keep= 17 f=  1 t=0.000s iters=450
+k= 17 keep= 18 f=  1 t=0.000s iters=450
+k= 18 keep= 19 f=  1 t=0.000s iters=450
+k= 19 keep= 20 f=  1 t=0.000s iters=450
+k= 20 keep= 21 f=  1 t=0.000s iters=450
+k= 21 keep= 21 f=  0 t=0.000s iters=112
+k= 22 keep= 22 f=  0 t=0.000s iters=112
+k= 23 keep= 23 f=  0 t=0.000s iters=112
+k= 24 keep= 24 f=  0 t=0.000s iters=112
+k= 25 keep= 25 f=  0 t=0.000s iters=112
+k= 26 keep= 26 f=  0 t=0.000s iters=112
+k= 27 keep= 27 f=  0 t=0.000s iters=112
+k= 28 keep= 28 f=  0 t=0.000s iters=112
+k= 29 keep= 29 f=  0 t=0.000s iters=112
+k= 30 keep= 30 f=  0 t=0.000s iters=112
+k= 31 keep= 31 f=  0 t=0.000s iters=112
+k= 32 keep= 32 f=  0 t=0.000s iters=112
+k= 33 keep= 33 f=  0 t=0.000s iters=112
+k= 34 keep= 34 f=  0 t=0.000s iters=112
+k= 35 keep= 35 f=  0 t=0.000s iters=112
+k= 36 keep= 36 f=  0 t=0.000s iters=112
+k= 37 keep= 37 f=  0 t=0.000s iters=112
+k= 38 keep= 38 f=  0 t=0.000s iters=112
+k= 39 keep= 39 f=  0 t=0.000s iters=112
+k= 40 keep= 40 f=  0 t=0.000s iters=112
+k= 41 keep= 41 f=  0 t=0.000s iters=112
+k= 42 keep= 42 f=  0 t=0.000s iters=112
+k= 43 keep= 43 f=  0 t=0.000s iters=112
+k= 44 keep= 44 f=  0 t=0.000s iters=112
+k= 45 keep= 45 f=  0 t=0.000s iters=112
+k= 46 keep= 46 f=  0 t=0.000s iters=112
+k= 47 keep= 47 f=  0 t=0.000s iters=112
+k= 48 keep= 48 f=  0 t=0.000s iters=112
+k= 49 keep= 49 f=  0 t=0.000s iters=112
+k= 50 keep= 50 f=  0 t=0.000s iters=112
+k= 51 keep= 51 f=  0 t=0.000s iters=112
+k= 52 keep= 52 f=  0 t=0.000s iters=112
+k= 53 keep= 53 f=  0 t=0.000s iters=112
+k= 54 keep= 54 f=  0 t=0.000s iters=112
+k= 55 keep= 55 f=  0 t=0.000s iters=112
+k= 56 keep= 56 f=  0 t=0.000s iters=112
+k= 57 keep= 57 f=  0 t=0.000s iters=112
+k= 58 keep= 58 f=  0 t=0.000s iters=112
+k= 59 keep= 59 f=  0 t=0.000s iters=112
+k= 60 keep= 60 f=  0 t=0.000s iters=112
+k= 61 keep= 61 f=  0 t=0.000s iters=112
+k= 62 keep= 62 f=  0 t=0.000s iters=112
+k= 63 keep= 63 f=  0 t=0.000s iters=112
+k= 64 keep= 64 f=  0 t=0.000s iters=112
+k= 65 keep= 65 f=  0 t=0.000s iters=112
+k= 66 keep= 66 f=  0 t=0.000s iters=112
+k= 67 keep= 67 f=  0 t=0.000s iters=112
+k= 68 keep= 68 f=  0 t=0.000s iters=112
+k= 69 keep= 69 f=  0 t=0.000s iters=112
+k= 70 keep= 70 f=  0 t=0.000s iters=112
+k= 71 keep= 71 f=  0 t=0.000s iters=112
+k= 72 keep= 72 f=  0 t=0.000s iters=112
+k= 73 keep= 73 f=  0 t=0.000s iters=112
+k= 74 keep= 74 f=  0 t=0.000s iters=112
+k= 75 keep= 75 f=  0 t=0.000s iters=112
+k= 76 keep= 76 f=  0 t=0.000s iters=112
+k= 77 keep= 77 f=  0 t=0.000s iters=112
+k= 78 keep= 78 f=  0 t=0.000s iters=112
+k= 79 keep= 79 f=  0 t=0.000s iters=112
+k= 80 keep= 80 f=  0 t=0.000s iters=112
+k= 81 keep= 81 f=  0 t=0.000s iters=112
+k= 82 keep= 82 f=  0 t=0.000s iters=112
+k= 83 keep= 83 f=  0 t=0.000s iters=112
+k= 84 keep= 84 f=  0 t=0.000s iters=112
+k= 85 keep= 85 f=  0 t=0.000s iters=112
+k= 86 keep= 86 f=  0 t=0.000s iters=112
+k= 87 keep= 87 f=  0 t=0.000s iters=112
+k= 88 keep= 88 f=  0 t=0.000s iters=112
+k= 89 keep= 89 f=  0 t=0.000s iters=112
+k= 90 keep= 90 f=  0 t=0.000s iters=112
+k= 91 keep= 91 f=  0 t=0.000s iters=112
+k= 92 keep= 92 f=  0 t=0.000s iters=112
+k= 93 keep= 93 f=  0 t=0.000s iters=112
+k= 94 keep= 94 f=  0 t=0.000s iters=112
+k= 95 keep= 95 f=  0 t=0.000s iters=112
+k= 96 keep= 96 f=  0 t=0.000s iters=112
+k= 97 keep= 97 f=  0 t=0.000s iters=112
+k= 98 keep= 98 f=  0 t=0.000s iters=112
+k= 99 keep= 99 f=  0 t=0.000s iters=112
+k=100 keep=100 f=  0 t=0.000s iters=112
+k=101 keep=101 f=  0 t=0.000s iters=112
+k=102 keep=102 f=  0 t=0.000s iters=112
+k=103 keep=103 f=  0 t=0.000s iters=112
+k=104 keep=104 f=  0 t=0.000s iters=112
+k=105 keep=105 f=  0 t=0.000s iters=112
+k=106 keep=106 f=  0 t=0.000s iters=112
+k=107 keep=107 f=  0 t=0.000s iters=112
+k=108 keep=108 f=  0 t=0.000s iters=112
+k=109 keep=109 f=  0 t=0.000s iters=112
+k=110 keep=110 f=  0 t=0.000s iters=112
+k=111 keep=111 f=  0 t=0.000s iters=112
+k=112 keep=112 f=  0 t=0.000s iters=112
+k=113 keep=113 f=  0 t=0.000s iters=112
+k=114 keep=114 f=  0 t=0.000s iters=112
+k=115 keep=115 f=  0 t=0.000s iters=112
+k=116 keep=116 f=  0 t=0.000s iters=112
+k=117 keep=117 f=  0 t=0.000s iters=112
+k=118 keep=118 f=  0 t=0.000s iters=112
+k=119 keep=119 f=  0 t=0.000s iters=112
+k=120 keep=120 f=  0 t=0.000s iters=112
+k=121 keep=121 f=  0 t=0.000s iters=112
+k=122 keep=122 f=  0 t=0.000s iters=112
+k=123 keep=123 f=  0 t=0.000s iters=112
+k=124 keep=124 f=  0 t=0.000s iters=112
+k=125 keep=125 f=  0 t=0.000s iters=112
+k=126 keep=126 f=  0 t=0.000s iters=112
+k=127 keep=127 f=  0 t=0.000s iters=112
+k=128 keep=128 f=  0 t=0.000s iters=112
+k=129 keep=129 f=  0 t=0.000s iters=112
+k=130 keep=130 f=  0 t=0.000s iters=112
+k=131 keep=131 f=  0 t=0.000s iters=112
+k=132 keep=132 f=  0 t=0.000s iters=112
+k=133 keep=133 f=  0 t=0.000s iters=112
+k=134 keep=134 f=  0 t=0.000s iters=112
+k=135 keep=135 f=  0 t=0.000s iters=112
+k=136 keep=136 f=  0 t=0.000s iters=112
+k=137 keep=137 f=  0 t=0.000s iters=112
+k=138 keep=138 f=  0 t=0.000s iters=112
+k=139 keep=139 f=  0 t=0.000s iters=112
+k=140 keep=140 f=  0 t=0.000s iters=112
+k=141 keep=141 f=  0 t=0.000s iters=112
+k=142 keep=142 f=  0 t=0.000s iters=112
+k=143 keep=143 f=  0 t=0.000s iters=112
+k=144 keep=144 f=  0 t=0.000s iters=112
+k=145 keep=145 f=  0 t=0.000s iters=112
+k=146 keep=146 f=  0 t=0.000s iters=112
+k=147 keep=147 f=  0 t=0.000s iters=112
+k=148 keep=148 f=  0 t=0.000s iters=112
+k=149 keep=149 f=  0 t=0.000s iters=112
+k=150 keep=150 f=  0 t=0.000s iters=112
+k=151 keep=151 f=  0 t=0.000s iters=112
+k=152 keep=152 f=  0 t=0.000s iters=112
+k=153 keep=153 f=  0 t=0.000s iters=112
+k=154 keep=154 f=  0 t=0.000s iters=112
+k=155 keep=155 f=  0 t=0.000s iters=112
+k=156 keep=156 f=  0 t=0.000s iters=112
+k=157 keep=157 f=  0 t=0.000s iters=112
+k=158 keep=158 f=  0 t=0.000s iters=112
+k=159 keep=159 f=  0 t=0.000s iters=112
+k=160 keep=160 f=  0 t=0.000s iters=112
+k=161 keep=161 f=  0 t=0.000s iters=112
+k=162 keep=162 f=  0 t=0.000s iters=112
+k=163 keep=163 f=  0 t=0.000s iters=112
+k=164 keep=164 f=  0 t=0.000s iters=112
+k=165 keep=165 f=  0 t=0.000s iters=112
+k=166 keep=166 f=  0 t=0.000s iters=112
+k=167 keep=167 f=  0 t=0.000s iters=112
+k=168 keep=168 f=  0 t=0.000s iters=112
+k=169 keep=169 f=  0 t=0.000s iters=112
+k=170 keep=170 f=  0 t=0.000s iters=112
+k=171 keep=171 f=  0 t=0.000s iters=112
+k=172 keep=172 f=  0 t=0.000s iters=112
+k=173 keep=173 f=  0 t=0.000s iters=112
+k=174 keep=174 f=  0 t=0.000s iters=112
+k=175 keep=175 f=  0 t=0.000s iters=112
+k=176 keep=176 f=  0 t=0.000s iters=112
+k=177 keep=177 f=  0 t=0.000s iters=112
+k=178 keep=178 f=  0 t=0.000s iters=112
+k=179 keep=179 f=  0 t=0.000s iters=112
+k=180 keep=180 f=  0 t=0.000s iters=112
+F=4 Ymax=3 time_to_best=0.031s time_to_F=0.031s total=7.781s

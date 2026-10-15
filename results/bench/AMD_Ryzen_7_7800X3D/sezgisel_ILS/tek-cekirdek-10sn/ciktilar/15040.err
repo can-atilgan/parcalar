@@ -1,0 +1,12 @@
+k=  1 keep= 12 f= 11 t=1.781s iters=81
+k=  2 keep= 16 f= 14 t=0.062s iters=39129
+k=  3 keep= 17 f= 14 t=0.047s iters=39505
+k=  4 keep= 18 f= 14 t=0.062s iters=39388
+k=  5 keep= 19 f= 14 t=0.000s iters=40768
+k=  6 keep= 20 f= 14 t=0.000s iters=40768
+k=  7 keep= 20 f= 13 t=0.000s iters=40705
+k=  8 keep= 21 f= 13 t=0.000s iters=40641
+k=  9 keep= 22 f= 13 t=0.078s iters=38939
+k= 10 keep= 22 f= 12 t=0.078s iters=615
+k= 11 keep= 22 f= 11 t=0.078s iters=152
+F=14 Ymax=6 time_to_best=0.000s time_to_F=0.000s total=2.781s

@@ -28,6 +28,7 @@ Results are stored as `results/<graph set>/<machine>/<method>/<setting>/`. Each 
 |---|---|---|---|---|
 | `data/bench` | low-power machine | 1 core, 120 s limit (some long runs on 4 cores) | 67 / 88 | [`results/bench/eski-makine/parcalar/eski-tur`](results/bench/eski-makine/parcalar/eski-tur/SONUCLAR.md) |
 | `data/bench` | AMD Ryzen 7 7800X3D | exact, 16 threads, 600 s limit | 74 / 74 run (14 sparsest not run) | [`results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/bench/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
+| `data/bench` | AMD Ryzen 7 7800X3D | ILS heuristic, 1 thread, 10 s | no proofs; matches 73 of 74 proven optima (19040: right Z, X one too large), every answer within 0.33 s | [`results/bench/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn`](results/bench/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn/SONUCLAR.md) |
 | `data/MEBtest` | AMD Ryzen 7 7800X3D | exact, 16 threads, 600 s limit | 74 / 76 run (12020 and 16030 not proven in 600 s) | [`results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
 | `data/MEBtest` | AMD Ryzen 7 7800X3D | ILS heuristic, 1 thread, 10 s | no proofs; matches all 74 proven optima, every answer within 1.05 s | [`results/MEBtest/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn`](results/MEBtest/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn/SONUCLAR.md) |
 

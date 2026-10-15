@@ -1,0 +1,12 @@
+k=  1 keep= 17 f= 16 t=0.391s iters=81
+k=  2 keep= 20 f= 18 t=0.000s iters=1407
+k=  3 keep= 22 f= 19 t=0.000s iters=6204
+k=  4 keep= 24 f= 20 t=0.062s iters=82944
+k=  5 keep= 24 f= 19 t=0.000s iters=82944
+k=  6 keep= 25 f= 19 t=0.000s iters=82944
+k=  7 keep= 26 f= 19 t=0.438s iters=65997
+k=  8 keep= 26 f= 18 t=0.000s iters=2304
+k=  9 keep= 27 f= 18 t=0.016s iters=2115
+k= 10 keep= 27 f= 17 t=0.016s iters=333
+k= 11 keep= 27 f= 16 t=0.016s iters=84
+F=20 Ymax=4 time_to_best=0.062s time_to_F=0.062s total=2.422s

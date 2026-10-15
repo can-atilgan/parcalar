@@ -1,0 +1,9 @@
+k=  1 keep=  5 f=  4 t=0.000s iters=4248
+k=  2 keep=  7 f=  5 t=0.000s iters=67968
+k=  3 keep=  8 f=  5 t=0.000s iters=67968
+k=  4 keep=  9 f=  5 t=0.016s iters=67968
+k=  5 keep=  9 f=  4 t=0.000s iters=67968
+k=  6 keep= 10 f=  4 t=0.031s iters=66519
+k=  7 keep= 10 f=  3 t=0.000s iters=1058
+k=  8 keep= 10 f=  2 t=0.000s iters=264
+F=5 Ymax=4 time_to_best=0.016s time_to_F=0.000s total=2.625s
