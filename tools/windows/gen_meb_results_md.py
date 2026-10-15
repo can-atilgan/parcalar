@@ -16,7 +16,7 @@ prov = sum(1 for f in done if t[f][3] == 'ispatli')
 L = ['# ParçalaR sonuçları — MEBtest grafları, AMD Ryzen 7 7800X3D, 16 çekirdek\n',
      "- **Graflar:** `data/MEBtest/` (hocanın test grafları, 2014). Aynı adlı `data/bench/` graflarından farklıdır ve iç içedir:",
      '  her yoğunluk, bir altındakinin bütün kenarlarını içerir.',
-     '- **Kapsam:** `data/bench/` 16 çekirdek turunda koşulan dosyaların aynısı (n ≥ 120 için %20, n ≥ 160 için %30 koşulmadı), artı 12020.',
+     '- **Kapsam:** `data/bench/` 16 çekirdek turunda koşulan dosyaların aynısı (n ≥ 120 için %20, n ≥ 160 için %30 koşulmadı), artı 12020 ve 16030.',
      '- **İşlemci:** AMD Ryzen 7 7800X3D 8-Core Processor (8 fiziksel çekirdek, 16 mantıksal), Windows 10 Pro',
      '- **Derleyici:** gcc 16.2.0 (WinLibs, MinGW-w64 UCRT)',
      '- **Derleme:** `gcc -O2 -march=native -Wa,-muse-unaligned-vector-move -fopenmp -static final/parcalar.c`',
@@ -51,6 +51,8 @@ L.append('- **10050:** Z = 91, X = 85. Dört bağımsız kesin çözücü (`alte
 L.append('- **12020:** 600 sn sınırında ispatlanamadı. Yazılan çözüm (Z = 94, X = 88, Y = 6) geçerli; daha iyisinin '
          'olmadığı gösterilemedi. Ayrı koşuldu: '
          "`BENCH=data/MEBtest SKIP='^(1[3-9]|20)020$|^(1[6-9]|20)030$' tools/windows/run_bench.sh <exe> results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek 16`.")
+L.append("- **16030:** 600 sn sınırında ispatlanamadı. Yazılan çözüm (Z = 141, X = 134, Y = 7) geçerli ve sezgisel ILS'nin "
+         "0.13 sn'de bulduğu sonuçla aynı; daha iyisinin olmadığı gösterilemedi.")
 L.append('- **15050:** ödevin bilinen değeri "(11/4)" ile tutuyor (Z = 139, X = 135).')
 L.append('- **12080 için başka bir programın cevabı:** `Z=115 X=114` (Y = 1, 6 bağımsız bilgisayar kalıyor) 12020–12080 '
          'graflarında geçerli, 12090\'da geçersiz. Z = 115 yalnızca 12080\'in optimumuyla tutuyor; ancak aynı Z, 111 bilgisayar '

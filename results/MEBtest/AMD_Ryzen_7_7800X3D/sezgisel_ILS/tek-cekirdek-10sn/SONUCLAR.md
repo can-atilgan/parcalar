@@ -73,7 +73,7 @@ Hücre: Z/X (en iyi çözüme ulaşma süresi, sn). `✓` = kesin çözücünün
 | 15080.txt | 145 | 140 | 5 | 0.000 | uygun | 145/140 | optimal |
 | 15090.txt | 147 | 143 | 4 | 0.016 | uygun | 147/143 | optimal |
 | 16020.txt | 131 | 123 | 8 | 0.031 | uygun | — | kesin sonuç yok |
-| 16030.txt | 141 | 134 | 7 | 0.125 | uygun | — | kesin sonuç yok |
+| 16030.txt | 141 | 134 | 7 | 0.125 | uygun | 141/134 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
 | 16040.txt | 145 | 141 | 4 | 0.031 | uygun | 145/141 | optimal |
 | 16050.txt | 149 | 145 | 4 | 0.234 | uygun | 149/145 | optimal |
 | 16060.txt | 151 | 146 | 5 | 0.031 | uygun | 151/146 | optimal |
