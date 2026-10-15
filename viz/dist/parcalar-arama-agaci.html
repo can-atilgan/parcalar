@@ -833,7 +833,7 @@ function makePlayer(panel, steps, parallelMode) {
   const speed = h("label", "speed");
   const sid = "speed-" + (parallelMode ? "p" : "s");
   const speedTxt = h("span");
-  const speedIn = h("input"); speedIn.type = "range"; speedIn.id = sid; speedIn.min = "0.5"; speedIn.max = "4"; speedIn.step = "0.5"; speedIn.value = "1";
+  const speedIn = h("input"); speedIn.type = "range"; speedIn.id = sid; speedIn.min = "0.5"; speedIn.max = "4"; speedIn.step = "0.25"; speedIn.value = "2.25";
   speed.append(speedTxt, speedIn);
   const counter = h("span", "counter");
   controls.append(bPlay, bStep, bReset, speed, counter);
