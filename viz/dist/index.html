@@ -62,9 +62,9 @@ header { display: grid; gap: 14px; }
 .gh { display: inline-flex; align-items: center; gap: 7px; font: 600 0.85rem var(--body); color: var(--ink); text-decoration: none; border: 1px solid var(--line-strong); border-radius: 6px; padding: 5px 11px; }
 .gh:hover { border-color: var(--accent); color: var(--accent); }
 .gh svg { width: 16px; height: 16px; fill: currentColor; }
-.lang, .theme, .method { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
-.lang button, .theme button, .method button { font: 600 0.8rem var(--mono); letter-spacing: 0.06em; color: var(--muted); background: transparent; border: 0; padding: 5px 11px; cursor: pointer; }
-.lang button[aria-pressed="true"], .theme button[aria-pressed="true"], .method button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.lang, .theme { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
+.lang button, .theme button { font: 600 0.8rem var(--mono); letter-spacing: 0.06em; color: var(--muted); background: transparent; border: 0; padding: 5px 11px; cursor: pointer; }
+.lang button[aria-pressed="true"], .theme button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 code, .mono { font-family: var(--mono); font-size: 0.9em; }
 .formula { font-family: var(--mono); background: var(--surface); padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
 
@@ -209,10 +209,19 @@ table.grid td.hot .t { color: var(--ink); }
 table.grid td.na { background: transparent; border: 1px dashed var(--line); color: var(--muted); font-family: var(--mono); }
 .notes .mk { font-family: var(--mono); white-space: nowrap; margin-right: 6px; color: var(--ink); }
 .notes { display: grid; gap: 6px; font-size: 0.86rem; color: var(--muted); max-width: 80ch; }
-.method-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-.method { flex-wrap: wrap; max-width: 100%; }
-.method button { font-size: 0.78rem; letter-spacing: 0.02em; padding: 6px 12px; }
-.method button:disabled { opacity: 0.4; cursor: not-allowed; }
+.method-row { display: grid; gap: 8px; }
+.method-lbl { font: 600 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.method { display: flex; flex-wrap: wrap; gap: 8px; }
+.method button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; min-width: 150px; padding: 8px 14px 9px; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line-strong); border-radius: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.method button .mt-t { font: 600 0.9rem var(--body); }
+.method button .mt-s { font: 0.72rem var(--mono); color: var(--muted); }
+.method button:hover:not(:disabled) { border-color: var(--accent); background: var(--surface); }
+.method button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.method button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.method button[aria-pressed="true"] .mt-s { color: var(--on-accent); opacity: 0.85; }
+.method button[aria-pressed="true"] .mt-t::before { content: "● "; }
+.method button:disabled { opacity: 0.45; border-style: dashed; cursor: not-allowed; }
+@media (max-width: 480px) { .method button { flex: 1 1 100%; } }
 .method-sum { margin: 0; font-size: 0.86rem; color: var(--muted); }
 .method-sum b { color: var(--ink); }
 .scale { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; color: var(--muted); font-family: var(--mono); flex-wrap: wrap; }
@@ -301,10 +310,11 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
         <button class="tab" role="tab" id="dtab-meb" aria-controls="grid" aria-selected="false" tabindex="-1"><span data-i18n="dtab_meb"></span></button>
       </div>
       <div class="method-row">
-        <div class="method" role="group" data-i18n-aria="method_aria">
-          <button type="button" id="mt-exact" aria-pressed="true"><span data-i18n="mt_exact"></span></button>
-          <button type="button" id="mt-ils" aria-pressed="false"><span data-i18n="mt_ils"></span></button>
-          <button type="button" id="mt-seed" aria-pressed="false"><span data-i18n="mt_seed"></span></button>
+        <span class="method-lbl" id="method-lbl" data-i18n="method_lbl"></span>
+        <div class="method" role="group" aria-labelledby="method-lbl">
+          <button type="button" id="mt-exact" aria-pressed="true"><span class="mt-t" data-i18n="mt_exact"></span><span class="mt-s" data-i18n="mt_exact_s"></span></button>
+          <button type="button" id="mt-seed" aria-pressed="false"><span class="mt-t" data-i18n="mt_seed"></span><span class="mt-s" data-i18n="mt_seed_s"></span></button>
+          <button type="button" id="mt-ils" aria-pressed="false"><span class="mt-t" data-i18n="mt_ils"></span><span class="mt-s" data-i18n="mt_ils_s"></span></button>
         </div>
         <p class="method-sum" id="method-sum"></p>
       </div>
@@ -559,7 +569,8 @@ const I18N = {
     done: p => `Sonuç: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. ${p.S.join(", ")} parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor.`,
     t_h: "Güncel testler",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 çekirdek · üretilen graflar ${b}/88, MEBtest ${m}/88 dosya`,
-    method_aria: "Çözüm yöntemi", mt_exact: "Kesin çözücü · 16 çekirdek", mt_ils: "Sezgisel ILS · tek çekirdek", mt_seed: "Kesin, ILS başlangıçlı · 16 çekirdek",
+    method_lbl: "Yöntem · birini seçin", mt_exact: "Kesin çözücü", mt_exact_s: "16 çekirdek · ispatlar",
+    mt_seed: "ILS başlangıçlı kesin", mt_seed_s: "16 çekirdek · ILS + ispat", mt_ils: "Sezgisel ILS", mt_ils_s: "tek çekirdek · ispatsız",
     mt_ils_na: "Bu graf setinde henüz koşulmadı",
     exact_sum: (k, p) => `${k} dosya koşuldu, <b>${p}</b> tanesinde optimallik ispatlandı.`,
     seed_sum: (k, p, u, b) => `${k} dosya koşuldu, <b>${p}</b> tanesinde optimallik ispatlandı. İspatlanamayan ${u} dosyanın <b>${b}</b> tanesinde ILS'siz kesin çözücüden daha iyi çözüm yazdı.`,
@@ -669,7 +680,8 @@ const I18N = {
     done: p => `Result: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. Wiping ${p.S.join(", ")} splits the network into {1, 2, 6} and {3, 4, 5}.`,
     t_h: "Current tests",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 cores · generated graphs ${b}/88, MEBtest ${m}/88 files`,
-    method_aria: "Solution method", mt_exact: "Exact solver · 16 cores", mt_ils: "ILS heuristic · single core", mt_seed: "Exact, ILS start · 16 cores",
+    method_lbl: "Method · pick one", mt_exact: "Exact solver", mt_exact_s: "16 cores · proves",
+    mt_seed: "Exact, ILS start", mt_seed_s: "16 cores · ILS + proof", mt_ils: "ILS heuristic", mt_ils_s: "single core · no proof",
     mt_ils_na: "Not run on this graph set yet",
     exact_sum: (k, p) => `${k} files run, optimality proven for <b>${p}</b>.`,
     seed_sum: (k, p, u, b) => `${k} files run, optimality proven for <b>${p}</b>. On <b>${b}</b> of the ${u} unproven files it wrote a better answer than the exact solver without ILS.`,
