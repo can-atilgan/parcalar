@@ -48,7 +48,7 @@ Hücre: Z/X (en iyi çözüme ulaşma süresi, sn). `✓` = kesin çözücünün
 | 12070.txt | 114 | 108 | 6 | 0.016 | uygun | 114/108 | optimal |
 | 12080.txt | 115 | 111 | 4 | 0.000 | uygun | 115/111 | optimal |
 | 12090.txt | 117 | 113 | 4 | 0.016 | uygun | 117/113 | optimal |
-| 13020.txt | 103 | 96 | 7 | 0.078 | uygun | — | kesin sonuç yok |
+| 13020.txt | 103 | 96 | 7 | 0.078 | uygun | 103/96 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
 | 13030.txt | 112 | 106 | 6 | 0.000 | uygun | 112/106 | optimal |
 | 13040.txt | 116 | 112 | 4 | 0.016 | uygun | 116/112 | optimal |
 | 13050.txt | 120 | 115 | 5 | 0.016 | uygun | 120/115 | optimal |
@@ -56,7 +56,7 @@ Hücre: Z/X (en iyi çözüme ulaşma süresi, sn). `✓` = kesin çözücünün
 | 13070.txt | 124 | 118 | 6 | 0.016 | uygun | 124/118 | optimal |
 | 13080.txt | 125 | 123 | 2 | 0.000 | uygun | 125/123 | optimal |
 | 13090.txt | 127 | 124 | 3 | 0.016 | uygun | 127/124 | optimal |
-| 14020.txt | 112 | 105 | 7 | 0.406 | uygun | — | kesin sonuç yok |
+| 14020.txt | 112 | 105 | 7 | 0.406 | uygun | 112/105 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
 | 14030.txt | 121 | 115 | 6 | 0.016 | uygun | 121/115 | optimal |
 | 14040.txt | 126 | 121 | 5 | 0.000 | uygun | 126/121 | optimal |
 | 14050.txt | 129 | 127 | 2 | 0.016 | uygun | 129/127 | optimal |
@@ -64,7 +64,7 @@ Hücre: Z/X (en iyi çözüme ulaşma süresi, sn). `✓` = kesin çözücünün
 | 14070.txt | 134 | 128 | 6 | 0.031 | uygun | 134/128 | optimal |
 | 14080.txt | 135 | 133 | 2 | 0.000 | uygun | 135/133 | optimal |
 | 14090.txt | 137 | 133 | 4 | 0.000 | uygun | 137/133 | optimal |
-| 15020.txt | 123 | 117 | 6 | 0.109 | uygun | — | kesin sonuç yok |
+| 15020.txt | 123 | 117 | 6 | 0.109 | uygun | 123/117 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
 | 15030.txt | 131 | 126 | 5 | 0.016 | uygun | 131/126 | optimal |
 | 15040.txt | 136 | 131 | 5 | 0.031 | uygun | 136/131 | optimal |
 | 15050.txt | 139 | 135 | 4 | 0.000 | uygun | 139/135 | optimal |
@@ -72,7 +72,7 @@ Hücre: Z/X (en iyi çözüme ulaşma süresi, sn). `✓` = kesin çözücünün
 | 15070.txt | 143 | 140 | 3 | 0.000 | uygun | 143/140 | optimal |
 | 15080.txt | 145 | 140 | 5 | 0.000 | uygun | 145/140 | optimal |
 | 15090.txt | 147 | 143 | 4 | 0.016 | uygun | 147/143 | optimal |
-| 16020.txt | 131 | 123 | 8 | 0.031 | uygun | — | kesin sonuç yok |
+| 16020.txt | 131 | 123 | 8 | 0.031 | uygun | 131/124 (ispatsız) | kesin çözücüden iyi (o ispatsız) |
 | 16030.txt | 141 | 134 | 7 | 0.125 | uygun | 141/134 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
 | 16040.txt | 145 | 141 | 4 | 0.031 | uygun | 145/141 | optimal |
 | 16050.txt | 149 | 145 | 4 | 0.234 | uygun | 149/145 | optimal |
@@ -80,32 +80,32 @@ Hücre: Z/X (en iyi çözüme ulaşma süresi, sn). `✓` = kesin çözücünün
 | 16070.txt | 154 | 147 | 7 | 0.844 | uygun | 154/147 | optimal |
 | 16080.txt | 155 | 151 | 4 | 0.031 | uygun | 155/151 | optimal |
 | 16090.txt | 157 | 153 | 4 | 0.000 | uygun | 157/153 | optimal |
-| 17020.txt | 141 | 134 | 7 | 1.047 | uygun | — | kesin sonuç yok |
-| 17030.txt | 150 | 144 | 6 | 0.094 | uygun | — | kesin sonuç yok |
+| 17020.txt | 141 | 134 | 7 | 1.047 | uygun | 142/135 (ispatsız) | kesin çözücüden iyi (o ispatsız) |
+| 17030.txt | 150 | 144 | 6 | 0.094 | uygun | 150/144 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
 | 17040.txt | 155 | 151 | 4 | 0.047 | uygun | 155/151 | optimal |
 | 17050.txt | 158 | 154 | 4 | 0.000 | uygun | 158/154 | optimal |
 | 17060.txt | 161 | 157 | 4 | 0.031 | uygun | 161/157 | optimal |
 | 17070.txt | 163 | 160 | 3 | 0.000 | uygun | 163/160 | optimal |
 | 17080.txt | 165 | 160 | 5 | 0.016 | uygun | 165/160 | optimal |
 | 17090.txt | 166 | 164 | 2 | 0.000 | uygun | 166/164 | optimal |
-| 18020.txt | 149 | 143 | 6 | 0.047 | uygun | — | kesin sonuç yok |
-| 18030.txt | 159 | 153 | 6 | 0.562 | uygun | — | kesin sonuç yok |
+| 18020.txt | 149 | 143 | 6 | 0.047 | uygun | 149/145 (ispatsız) | kesin çözücüden iyi (o ispatsız) |
+| 18030.txt | 159 | 153 | 6 | 0.562 | uygun | 159/155 (ispatsız) | kesin çözücüden iyi (o ispatsız) |
 | 18040.txt | 165 | 161 | 4 | 0.109 | uygun | 165/161 | optimal |
 | 18050.txt | 169 | 163 | 6 | 0.203 | uygun | 169/163 | optimal |
 | 18060.txt | 171 | 166 | 5 | 0.984 | uygun | 171/166 | optimal |
 | 18070.txt | 173 | 169 | 4 | 0.016 | uygun | 173/169 | optimal |
 | 18080.txt | 175 | 170 | 5 | 0.391 | uygun | 175/170 | optimal |
 | 18090.txt | 176 | 174 | 2 | 0.016 | uygun | 176/174 | optimal |
-| 19020.txt | 160 | 151 | 9 | 0.094 | uygun | — | kesin sonuç yok |
-| 19030.txt | 169 | 163 | 6 | 0.047 | uygun | — | kesin sonuç yok |
+| 19020.txt | 160 | 151 | 9 | 0.094 | uygun | 160/151 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
+| 19030.txt | 169 | 163 | 6 | 0.047 | uygun | 170/163 (ispatsız) | kesin çözücüden iyi (o ispatsız) |
 | 19040.txt | 175 | 170 | 5 | 0.062 | uygun | 175/170 | optimal |
 | 19050.txt | 178 | 175 | 3 | 0.094 | uygun | 178/175 | optimal |
 | 19060.txt | 181 | 177 | 4 | 0.000 | uygun | 181/177 | optimal |
 | 19070.txt | 183 | 180 | 3 | 0.016 | uygun | 183/180 | optimal |
 | 19080.txt | 185 | 180 | 5 | 0.031 | uygun | 185/180 | optimal |
 | 19090.txt | 187 | 182 | 5 | 0.031 | uygun | 187/182 | optimal |
-| 20020.txt | 168 | 163 | 5 | 0.062 | uygun | — | kesin sonuç yok |
-| 20030.txt | 179 | 174 | 5 | 0.281 | uygun | — | kesin sonuç yok |
+| 20020.txt | 168 | 163 | 5 | 0.062 | uygun | 170/161 (ispatsız) | kesin çözücüden iyi (o ispatsız) |
+| 20030.txt | 179 | 174 | 5 | 0.281 | uygun | 179/174 (ispatsız) | kesin çözücüyle aynı (o ispatsız) |
 | 20040.txt | 184 | 179 | 5 | 0.125 | uygun | 184/179 | optimal |
 | 20050.txt | 188 | 183 | 5 | 0.578 | uygun | 188/183 | optimal |
 | 20060.txt | 191 | 187 | 4 | 0.234 | uygun | 191/187 | optimal |
