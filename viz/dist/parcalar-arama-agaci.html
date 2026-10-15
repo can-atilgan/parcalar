@@ -147,10 +147,10 @@ code, .mono { font-family: var(--mono); font-size: 0.9em; }
 .sw.box.pr { border-style: dashed; background: transparent; }
 .sw.box.ck { border-color: var(--accent); }
 .sw.box.im { background: var(--accent); border-color: var(--accent); }
-.tree-wrap { background: var(--surface); border-radius: 8px; overflow: auto; max-height: 440px; }
+.tree-wrap { background: var(--surface); border-radius: 8px; }
 .tree-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .tree-head .hint { font-size: 0.78rem; color: var(--muted); }
-svg.tree { display: block; }
+svg.tree { display: block; max-width: 100%; height: auto; }
 .te { fill: none; stroke: var(--line); stroke-width: 1.3; transition: stroke .3s; }
 .te.vis { stroke: var(--line-strong); }
 .tn rect { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; transition: fill .25s, stroke .25s, stroke-width .2s; }
@@ -202,6 +202,7 @@ table.grid td.hot .t { color: var(--ink); }
 table.grid td.na { background: transparent; border: 1px dashed var(--line); color: var(--muted); font-family: var(--mono); }
 .notes .mk { font-family: var(--mono); white-space: nowrap; margin-right: 6px; color: var(--ink); }
 .notes { display: grid; gap: 6px; font-size: 0.86rem; color: var(--muted); max-width: 80ch; }
+.picker { display: grid; gap: 8px; margin-bottom: 4px; }
 .method-row { display: grid; gap: 8px; }
 .method-lbl { font: 600 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .method { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -210,9 +211,9 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
 .method button .mt-s { font: 0.72rem var(--mono); color: var(--muted); }
 .method button:hover:not(:disabled) { border-color: var(--accent); background: var(--surface); }
 .method button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.method button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.method button[aria-pressed="true"] .mt-s { color: var(--on-accent); opacity: 0.85; }
-.method button[aria-pressed="true"] .mt-t::before { content: "● "; }
+.method button[aria-pressed="true"], .method button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.method button[aria-pressed="true"] .mt-s, .method button[aria-selected="true"] .mt-s { color: var(--on-accent); opacity: 0.85; }
+.method button[aria-pressed="true"] .mt-t::before, .method button[aria-selected="true"] .mt-t::before { content: "● "; }
 .method button:disabled { opacity: 0.45; border-style: dashed; cursor: not-allowed; }
 @media (max-width: 480px) { .method button { flex: 1 1 100%; } }
 .method-sum { margin: 0; font-size: 0.86rem; color: var(--muted); }
@@ -298,9 +299,12 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
           <ul class="flags" data-i18n="flags"></ul>
         </div>
       </div>
-      <div class="tabs" role="tablist" data-i18n-aria="dtabs_aria">
-        <button class="tab" role="tab" id="dtab-meb" aria-controls="grid" aria-selected="true"><span data-i18n="dtab_meb"></span></button>
-        <button class="tab" role="tab" id="dtab-bench" aria-controls="grid" aria-selected="false" tabindex="-1"><span data-i18n="dtab_bench"></span></button>
+      <div class="picker">
+        <span class="method-lbl" id="dtabs-lbl" data-i18n="dtabs_lbl"></span>
+        <div class="method" role="tablist" aria-labelledby="dtabs-lbl">
+          <button type="button" role="tab" id="dtab-meb" aria-controls="grid" aria-selected="true"><span class="mt-t" data-i18n="dtab_meb"></span><span class="mt-s" data-i18n="dtab_meb_s"></span></button>
+          <button type="button" role="tab" id="dtab-bench" aria-controls="grid" aria-selected="false" tabindex="-1"><span class="mt-t" data-i18n="dtab_bench"></span><span class="mt-s" data-i18n="dtab_bench_s"></span></button>
+        </div>
       </div>
       <div class="method-row">
         <span class="method-lbl" id="method-lbl" data-i18n="method_lbl"></span>
@@ -562,7 +566,7 @@ const I18N = {
     done: p => `Sonuç: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. ${p.S.join(", ")} parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor.`,
     t_h: "Güncel testler",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 çekirdek · MEBtest ${m}/88, üretilen graflar ${b}/88 dosya`,
-    method_lbl: "Yöntem · birini seçin", mt_exact: "Kesin çözücü", mt_exact_s: "16 çekirdek · ispatlar",
+    method_lbl: "2 · Yöntem · birini seçin", mt_exact: "Kesin çözücü", mt_exact_s: "16 çekirdek · ispatlar",
     mt_seed: "ILS başlangıçlı kesin", mt_seed_s: "16 çekirdek · ILS + ispat", mt_ils: "Sezgisel ILS", mt_ils_s: "tek çekirdek · ispatsız",
     mt_ils_na: "Bu graf setinde henüz koşulmadı",
     exact_sum: (k, p) => `${k} dosya koşuldu, <b>${p}</b> tanesinde optimallik ispatlandı.`,
@@ -577,7 +581,7 @@ const I18N = {
     notes_ils: `<p>Hücre: <b>Z/X</b> ve sezgisel çözücünün en iyi çözümünü bulduğu an (işlemci süresi).</p><p><b class="mk">[✓]</b> kesin çözücünün ispatlı optimumuyla aynı.</p><p><b class="mk">[≠]</b> farklı. Bench'teki 19040'ta olduğu gibi Z doğru olup X fazla çıkabilir: sezgisel çözücü aynı Z'yi daha az bilgisayar parçalayarak veren çözümü kaçırabilir.</p><p><b class="mk">[?]</b> karşılaştırılacak ispatlı sonuç yok: ya kesin çözücü bu dosyayı koşmadı ya da süre sınırında ispatlayamadı.</p>
       <p><b>Kesin çözücü ile farkı:</b> kesin çözücü arama ağacının tamamını tarar ve daha iyi bir çözüm olmadığını ispatlar. Sezgisel ILS <a class="cite" href="#ref-6">[6]</a> ise yerel arama yapar: iyi bir çözümü çok hızlı bulur ama en iyi olduğunu ispatlayamaz. İspatlı dosyalarda ikisi neredeyse her zaman aynı cevaba vardı. Kesin çözücünün süresinin neredeyse tamamı çözümü bulmaya değil, ispata gidiyor.</p>
       <p>Ayarlar: <code>alternatif_cozuculer/heur</code>, aynı derleme bayrakları (<code>-fopenmp</code> olmadan), dosya başına 10 sn işlemci süresi (<code>-t 10</code>), tohum 1, 8 dosya aynı anda. Uzun süre iyileşme bulamayınca sınırı beklemeden durur. Bütün çıktılar <code>tools/verify.py</code> ile kontrol edildi.</p>`,
-    dtabs_aria: "Test grafları", dtab_bench: "data/bench (üretilen graflar)", dtab_meb: "MEBtest (hocanın grafları)",
+    dtabs_lbl: "1 · Graf seti · birini seçin", dtab_meb: "MEBtest", dtab_meb_s: "hocanın grafları · 88 dosya", dtab_bench: "data/bench", dtab_bench_s: "üretilen graflar · 88 dosya",
     env: `<dt>İşlemci</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 fiziksel çekirdek, 16 mantıksal (SMT)</span></dd>
       <dt>Koşu</dt><dd>Kesin çözücü: <b>16 çekirdek</b>, 16 iş parçacığı (<code>OMP_NUM_THREADS=16</code>). Sezgisel ILS: tek iş parçacığı, 8 dosya aynı anda.</dd>
       <dt>Sınır</dt><dd>Kesin çözücü: dosya başına 600 sn (<code>-t 600</code>), dosyalar sırayla; MEBtest'in en seyrek 14 dosyası 300 sn (<code>-t 300</code>), aralarında 10 sn bekleme. ILS başlangıçlı kesin çözücü: dosya başına 300 sn. Sezgisel ILS: dosya başına 10 sn işlemci süresi (<code>-t 10</code>).</dd>
@@ -673,7 +677,7 @@ const I18N = {
     done: p => `Result: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. Wiping ${p.S.join(", ")} splits the network into {1, 2, 6} and {3, 4, 5}.`,
     t_h: "Current tests",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 cores · MEBtest ${m}/88, generated graphs ${b}/88 files`,
-    method_lbl: "Method · pick one", mt_exact: "Exact solver", mt_exact_s: "16 cores · proves",
+    method_lbl: "2 · Method · pick one", mt_exact: "Exact solver", mt_exact_s: "16 cores · proves",
     mt_seed: "Exact, ILS start", mt_seed_s: "16 cores · ILS + proof", mt_ils: "ILS heuristic", mt_ils_s: "single core · no proof",
     mt_ils_na: "Not run on this graph set yet",
     exact_sum: (k, p) => `${k} files run, optimality proven for <b>${p}</b>.`,
@@ -688,7 +692,7 @@ const I18N = {
     notes_ils: `<p>Cell: <b>Z/X</b> and the moment the heuristic found its best answer (CPU time).</p><p><b class="mk">[✓]</b> same as the exact solver's proven optimum.</p><p><b class="mk">[≠]</b> different. As on bench 19040, Z can be right while X is larger: the heuristic can miss the answer that reaches the same Z with fewer wiped computers.</p><p><b class="mk">[?]</b> no proven result to compare with: the exact solver either did not run the file or could not prove it within its time limit.</p>
       <p><b>How it differs from the exact solver:</b> the exact solver scans the whole search tree and proves that no better answer exists. The ILS heuristic <a class="cite" href="#ref-6">[6]</a> runs a local search instead: it finds a good answer very quickly but cannot prove that it is the best. On the proven files the two almost always agreed. Almost all of the exact solver's time goes into the proof, not into finding the answer.</p>
       <p>Settings: <code>alternatif_cozuculer/heur</code>, same compiler flags (without <code>-fopenmp</code>), 10 s of CPU time per file (<code>-t 10</code>), seed 1, 8 files at a time. It stops before the limit once it has gone a long time without improving. Every output was checked with <code>tools/verify.py</code>.</p>`,
-    dtabs_aria: "Test graphs", dtab_bench: "data/bench (generated graphs)", dtab_meb: "MEBtest (instructor's graphs)",
+    dtabs_lbl: "1 · Graph set · pick one", dtab_meb: "MEBtest", dtab_meb_s: "instructor's graphs · 88 files", dtab_bench: "data/bench", dtab_bench_s: "generated graphs · 88 files",
     env: `<dt>CPU</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 physical cores, 16 logical (SMT)</span></dd>
       <dt>Run</dt><dd>Exact solver: <b>16 cores</b>, 16 threads (<code>OMP_NUM_THREADS=16</code>). ILS heuristic: single thread, 8 files at a time.</dd>
       <dt>Limit</dt><dd>Exact solver: 600 s per file (<code>-t 600</code>), files one at a time; the 14 sparsest MEBtest files 300 s (<code>-t 300</code>), with a 10 s pause between them. Exact solver started from ILS: 300 s per file. ILS heuristic: 10 s of CPU time per file (<code>-t 10</code>).</dd>
