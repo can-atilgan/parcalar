@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=125 X=123, ILS Z=125 X=123 (1.42 sn) -> Z=125 X=123
+Kontrol: |S|=123, kalan en buyuk bilesen Y=2, X+Y=125 -> UYGUN (tutarli)
+Optimallik ispatlandi.
+Sure: 1.43 sn (16 is parcacigi)

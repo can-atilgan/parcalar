@@ -21,6 +21,14 @@ ispatlandı." ve süre.
 X birden fazla optimal çözümde farklı olabilir; program, optimal Z'yi veren çözümler arasında
 EN AZ bilgisayarı parçalayanı (en büyük Y) seçer.
 
+## ILS başlangıçlı sürüm
+    gcc -O2 -fopenmp parcalar_baslangic_degerli.c -o parcalar_bd
+Aynı arama; tek fark, aramadan önce sezgisel ILS'nin (`alternatif_cozuculer/heur`, tohum 1) çalışması ve
+bulduğu çözümün başlangıç değeri olması. `-H SN` ILS'nin işlemci süresi sınırı (varsayılan 10; ilerleme
+durunca daha önce biter), `-t SN` ILS dahil toplam sınır. stderr'in ilk satırı başlangıç çözümlerini verir:
+    Baslangic: yerel arama Z=170 X=161, ILS Z=168 X=163 (3.46 sn) -> Z=168 X=163
+Süre sınırında bitmeyen seyrek graflarda yazılan çözüm hiçbir zaman ILS'ninkinden kötü olmaz.
+
 ## Bağımsız doğrulama
     ./parcalar 10020.txt > cikti.txt
     python3 ../tools/verify.py 10020.txt cikti.txt     # UYGUN (feasible) - tutarli

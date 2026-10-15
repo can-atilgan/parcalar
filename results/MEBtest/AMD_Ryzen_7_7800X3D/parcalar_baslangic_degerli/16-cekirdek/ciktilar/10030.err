@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=83 X=78, ILS Z=83 X=78 (0.98 sn) -> Z=83 X=78
+Kontrol: |S|=78, kalan en buyuk bilesen Y=5, X+Y=83 -> UYGUN (tutarli)
+Optimallik ispatlandi.
+Sure: 2.54 sn (16 is parcacigi)

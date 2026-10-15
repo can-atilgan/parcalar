@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=160 X=151, ILS Z=160 X=151 (4.14 sn) -> Z=160 X=151
+Kontrol: |S|=151, kalan en buyuk bilesen Y=9, X+Y=160 -> UYGUN (tutarli)
+ZAMAN SINIRI (-t 300 sn) doldu: yazilan cozum gecerli ama optimalligi ISPATLANMADI
+Sure: 299.45 sn (16 is parcacigi)

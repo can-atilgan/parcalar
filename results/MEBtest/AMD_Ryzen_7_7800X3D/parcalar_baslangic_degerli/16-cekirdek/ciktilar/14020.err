@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=112 X=105, ILS Z=112 X=105 (2.21 sn) -> Z=112 X=105
+Kontrol: |S|=105, kalan en buyuk bilesen Y=7, X+Y=112 -> UYGUN (tutarli)
+ZAMAN SINIRI (-t 300 sn) doldu: yazilan cozum gecerli ama optimalligi ISPATLANMADI
+Sure: 299.64 sn (16 is parcacigi)

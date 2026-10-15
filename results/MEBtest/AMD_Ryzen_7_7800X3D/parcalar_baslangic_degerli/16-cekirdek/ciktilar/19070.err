@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=183 X=180, ILS Z=183 X=180 (3.13 sn) -> Z=183 X=180
+Kontrol: |S|=180, kalan en buyuk bilesen Y=3, X+Y=183 -> UYGUN (tutarli)
+Optimallik ispatlandi.
+Sure: 3.16 sn (16 is parcacigi)

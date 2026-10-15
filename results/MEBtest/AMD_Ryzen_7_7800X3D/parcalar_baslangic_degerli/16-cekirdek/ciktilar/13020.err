@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=103 X=96, ILS Z=103 X=96 (1.87 sn) -> Z=103 X=96
+Kontrol: |S|=96, kalan en buyuk bilesen Y=7, X+Y=103 -> UYGUN (tutarli)
+ZAMAN SINIRI (-t 300 sn) doldu: yazilan cozum gecerli ama optimalligi ISPATLANMADI
+Sure: 299.41 sn (16 is parcacigi)

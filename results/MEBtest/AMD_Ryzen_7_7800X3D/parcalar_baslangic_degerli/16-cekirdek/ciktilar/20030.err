@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=179 X=174, ILS Z=179 X=174 (4.10 sn) -> Z=179 X=174
+Kontrol: |S|=174, kalan en buyuk bilesen Y=5, X+Y=179 -> UYGUN (tutarli)
+ZAMAN SINIRI (-t 300 sn) doldu: yazilan cozum gecerli ama optimalligi ISPATLANMADI
+Sure: 299.82 sn (16 is parcacigi)

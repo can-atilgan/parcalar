@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=131 X=124, ILS Z=131 X=123 (2.51 sn) -> Z=131 X=123
+Kontrol: |S|=123, kalan en buyuk bilesen Y=8, X+Y=131 -> UYGUN (tutarli)
+ZAMAN SINIRI (-t 300 sn) doldu: yazilan cozum gecerli ama optimalligi ISPATLANMADI
+Sure: 299.68 sn (16 is parcacigi)

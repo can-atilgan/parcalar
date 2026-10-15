@@ -203,6 +203,7 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
 .notes .mk { font-family: var(--mono); white-space: nowrap; margin-right: 6px; color: var(--ink); }
 .notes { display: grid; gap: 6px; font-size: 0.86rem; color: var(--muted); max-width: 80ch; }
 .method-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.method { flex-wrap: wrap; max-width: 100%; }
 .method button { font-size: 0.78rem; letter-spacing: 0.02em; padding: 6px 12px; }
 .method button:disabled { opacity: 0.4; cursor: not-allowed; }
 .method-sum { margin: 0; font-size: 0.86rem; color: var(--muted); }
@@ -296,6 +297,7 @@ table.grid td.na { background: transparent; border: 1px dashed var(--line); colo
         <div class="method" role="group" data-i18n-aria="method_aria">
           <button type="button" id="mt-exact" aria-pressed="true"><span data-i18n="mt_exact"></span></button>
           <button type="button" id="mt-ils" aria-pressed="false"><span data-i18n="mt_ils"></span></button>
+          <button type="button" id="mt-seed" aria-pressed="false"><span data-i18n="mt_seed"></span></button>
         </div>
         <p class="method-sum" id="method-sum"></p>
       </div>
@@ -466,7 +468,9 @@ const RESULTS = [["10020",76,70,"ispatli",51.23,51.27],["10030",83,76,"ispatli",
 const RESULTS_MEB = [["12030",102,97,"ispatli",14.25,14.29],["12040",106,101,"ispatli",0.56,0.6],["12050",110,105,"ispatli",0.17,0.21],["12060",112,108,"ispatli",0.03,0.07],["12070",114,108,"ispatli",0.03,0.07],["12080",115,111,"ispatli",0.02,0.06],["12090",117,113,"ispatli",0.02,0.06],["10020",75,71,"ispatli",35.74,35.79],["10030",83,78,"ispatli",1.77,1.8],["10040",87,82,"ispatli",0.3,0.33],["10050",91,85,"ispatli",0.17,0.2],["10060",92,90,"ispatli",0.02,0.05],["10070",94,91,"ispatli",0.02,0.06],["10080",96,92,"ispatli",0.02,0.06],["10090",97,94,"ispatli",0.01,0.04],["11020",85,82,"ispatli",240.13,240.17],["11030",93,86,"ispatli",4.18,4.21],["11040",97,93,"ispatli",0.4,0.43],["11050",100,96,"ispatli",0.13,0.16],["11060",102,100,"ispatli",0.02,0.05],["11070",104,100,"ispatli",0.02,0.05],["11080",106,101,"ispatli",0.02,0.05],["11090",107,104,"ispatli",0.01,0.04],["13030",112,106,"ispatli",46.79,46.83],["13040",116,112,"ispatli",1.07,1.1],["13050",120,115,"ispatli",0.26,0.29],["13060",122,118,"ispatli",0.04,0.07],["13070",124,118,"ispatli",0.04,0.06],["13080",125,123,"ispatli",0.02,0.05],["13090",127,124,"ispatli",0.02,0.05],["14030",121,115,"ispatli",77.75,77.78],["14040",126,121,"ispatli",1.9,1.93],["14050",129,127,"ispatli",0.2,0.23],["14060",132,128,"ispatli",0.04,0.07],["14070",134,128,"ispatli",0.03,0.06],["14080",135,133,"ispatli",0.02,0.05],["14090",137,133,"ispatli",0.02,0.05],["15030",131,126,"ispatli",227.28,227.32],["15040",136,131,"ispatli",8.01,8.05],["15050",139,135,"ispatli",0.32,0.35],["15060",142,137,"ispatli",0.07,0.1],["15070",143,140,"ispatli",0.03,0.06],["15080",145,140,"ispatli",0.02,0.05],["15090",147,143,"ispatli",0.03,0.06],["16040",145,141,"ispatli",11.84,11.87],["16050",149,145,"ispatli",0.75,0.78],["16060",151,146,"ispatli",0.05,0.08],["16070",154,147,"ispatli",0.05,0.08],["16080",155,151,"ispatli",0.02,0.05],["16090",157,153,"ispatli",0.03,0.07],["17040",155,151,"ispatli",13.26,13.3],["17050",158,154,"ispatli",0.44,0.47],["17060",161,157,"ispatli",0.08,0.11],["17070",163,160,"ispatli",0.03,0.06],["17080",165,160,"ispatli",0.03,0.07],["17090",166,164,"ispatli",0.02,0.05],["18040",165,161,"ispatli",58.55,58.59],["18050",169,163,"ispatli",2.07,2.1],["18060",171,166,"ispatli",0.12,0.15],["18070",173,169,"ispatli",0.03,0.07],["18080",175,170,"ispatli",0.03,0.06],["18090",176,174,"ispatli",0.02,0.04],["19040",175,170,"ispatli",122.74,122.78],["19050",178,175,"ispatli",1.09,1.12],["19060",181,177,"ispatli",0.16,0.18],["19070",183,180,"ispatli",0.03,0.06],["19080",185,180,"ispatli",0.03,0.06],["19090",187,182,"ispatli",0.05,0.07],["20040",184,179,"ispatli",54.43,54.47],["20050",188,183,"ispatli",4.4,4.43],["20060",191,187,"ispatli",0.25,0.28],["20070",193,190,"ispatli",0.04,0.07],["20080",195,190,"ispatli",0.03,0.06],["20090",197,192,"ispatli",0.04,0.07],["12020",94,88,"ISPATSIZ",299.77,299.8],["13020",103,96,"ISPATSIZ",299.96,299.99],["14020",112,105,"ISPATSIZ",299.66,299.7],["15020",123,117,"ISPATSIZ",299.67,299.7],["16020",131,124,"ISPATSIZ",299.66,299.69],["16030",141,134,"ISPATSIZ",299.82,299.85],["17020",142,135,"ISPATSIZ",299.69,299.73],["17030",150,144,"ISPATSIZ",299.78,299.82],["18020",149,145,"ISPATSIZ",299.68,299.71],["18030",159,155,"ISPATSIZ",299.82,299.85],["19020",160,151,"ISPATSIZ",299.68,299.71],["19030",170,163,"ISPATSIZ",299.81,299.85],["20020",170,161,"ISPATSIZ",299.67,299.71],["20030",179,174,"ISPATSIZ",299.79,299.82]];
 const RESULTS_MEB_ILS = [["10020",75,71,"25",4,0.016],["10030",83,78,"17",5,0.016],["10040",87,82,"13",5,0],["10050",91,85,"9",6,0],["10060",92,90,"8",2,0],["10070",94,91,"6",3,0],["10080",96,92,"4",4,0],["10090",97,94,"3",3,0],["11020",85,82,"25",3,0.125],["11030",93,86,"17",7,0.438],["11040",97,93,"13",4,0],["11050",100,96,"10",4,0.016],["11060",102,100,"8",2,0],["11070",104,100,"6",4,0.016],["11080",106,101,"4",5,0],["11090",107,104,"3",3,0.016],["12020",94,88,"26",6,0],["12030",102,97,"18",5,0],["12040",106,101,"14",5,0.016],["12050",110,105,"10",5,0.016],["12060",112,108,"8",4,0],["12070",114,108,"6",6,0.016],["12080",115,111,"5",4,0],["12090",117,113,"3",4,0.016],["13020",103,96,"27",7,0.078],["13030",112,106,"18",6,0],["13040",116,112,"14",4,0.016],["13050",120,115,"10",5,0.016],["13060",122,118,"8",4,0],["13070",124,118,"6",6,0.016],["13080",125,123,"5",2,0],["13090",127,124,"3",3,0.016],["14020",112,105,"28",7,0.406],["14030",121,115,"19",6,0.016],["14040",126,121,"14",5,0],["14050",129,127,"11",2,0.016],["14060",132,128,"8",4,0],["14070",134,128,"6",6,0.031],["14080",135,133,"5",2,0],["14090",137,133,"3",4,0],["15020",123,117,"27",6,0.109],["15030",131,126,"19",5,0.016],["15040",136,131,"14",5,0.031],["15050",139,135,"11",4,0],["15060",142,137,"8",5,0.109],["15070",143,140,"7",3,0],["15080",145,140,"5",5,0],["15090",147,143,"3",4,0.016],["16020",131,123,"29",8,0.031],["16030",141,134,"19",7,0.125],["16040",145,141,"15",4,0.031],["16050",149,145,"11",4,0.234],["16060",151,146,"9",5,0.031],["16070",154,147,"6",7,0.844],["16080",155,151,"5",4,0.031],["16090",157,153,"3",4,0],["17020",141,134,"29",7,1.047],["17030",150,144,"20",6,0.094],["17040",155,151,"15",4,0.047],["17050",158,154,"12",4,0],["17060",161,157,"9",4,0.031],["17070",163,160,"7",3,0],["17080",165,160,"5",5,0.016],["17090",166,164,"4",2,0],["18020",149,143,"31",6,0.047],["18030",159,153,"21",6,0.562],["18040",165,161,"15",4,0.109],["18050",169,163,"11",6,0.203],["18060",171,166,"9",5,0.984],["18070",173,169,"7",4,0.016],["18080",175,170,"5",5,0.391],["18090",176,174,"4",2,0.016],["19020",160,151,"30",9,0.094],["19030",169,163,"21",6,0.047],["19040",175,170,"15",5,0.062],["19050",178,175,"12",3,0.094],["19060",181,177,"9",4,0],["19070",183,180,"7",3,0.016],["19080",185,180,"5",5,0.031],["19090",187,182,"3",5,0.031],["20020",168,163,"32",5,0.062],["20030",179,174,"21",5,0.281],["20040",184,179,"16",5,0.125],["20050",188,183,"12",5,0.578],["20060",191,187,"9",4,0.234],["20070",193,190,"7",3,0.031],["20080",195,190,"5",5,0],["20090",197,192,"3",5,0.047]];
 const RESULTS_BENCH_ILS = [["10020",76,70,"24",6,0],["10030",83,76,"17",7,0],["10040",87,82,"13",5,0],["10050",90,85,"10",5,0],["10060",92,88,"8",4,0.016],["10070",94,91,"6",3,0],["10080",96,91,"4",5,0],["10090",97,94,"3",3,0],["11020",85,78,"25",7,0.016],["11030",92,87,"18",5,0],["11040",97,91,"13",6,0],["11050",100,95,"10",5,0.016],["11060",102,100,"8",2,0],["11070",104,100,"6",4,0.031],["11080",105,102,"5",3,0],["11090",107,103,"3",4,0],["12020",93,87,"27",6,0.031],["12030",102,99,"18",3,0.078],["12040",106,102,"14",4,0.031],["12050",110,105,"10",5,0],["12060",112,108,"8",4,0.016],["12070",114,109,"6",5,0.047],["12080",116,111,"4",5,0.016],["12090",117,114,"3",3,0],["13020",103,95,"27",8,0.094],["13030",110,106,"20",4,0],["13040",116,113,"14",3,0.016],["13050",119,115,"11",4,0.016],["13060",122,117,"8",5,0.172],["13070",123,121,"7",2,0],["13080",125,123,"5",2,0.016],["13090",127,123,"3",4,0.016],["14020",113,105,"27",8,0.016],["14030",121,116,"19",5,0],["14040",126,121,"14",5,0.031],["14050",129,125,"11",4,0.141],["14060",132,127,"8",5,0],["14070",134,128,"6",6,0.016],["14080",135,132,"5",3,0],["14090",137,133,"3",4,0],["15020",123,115,"27",8,0.016],["15030",130,126,"20",4,0.062],["15040",136,130,"14",6,0],["15050",139,135,"11",4,0.234],["15060",142,137,"8",5,0.188],["15070",144,138,"6",6,0.031],["15080",145,143,"5",2,0],["15090",147,142,"3",5,0.016],["16020",132,124,"28",8,0.016],["16030",140,134,"20",6,0.047],["16040",145,140,"15",5,0.031],["16050",149,145,"11",4,0.328],["16060",151,148,"9",3,0.047],["16070",153,150,"7",3,0.031],["16080",155,151,"5",4,0.016],["16090",157,153,"3",4,0.016],["17020",140,133,"30",7,0.094],["17030",149,145,"21",4,0],["17040",155,151,"15",4,0.094],["17050",159,152,"11",7,0.016],["17060",161,159,"9",2,0.078],["17070",163,160,"7",3,0.109],["17080",165,160,"5",5,0],["17090",167,163,"3",4,0],["18020",150,143,"30",7,0.188],["18030",159,154,"21",5,0.016],["18040",165,159,"15",6,0.016],["18050",169,163,"11",6,0.156],["18060",171,167,"9",4,0.125],["18070",173,169,"7",4,0.047],["18080",175,170,"5",5,0.016],["18090",176,173,"4",3,0.031],["19020",159,153,"31",6,0.062],["19030",169,163,"21",6,0.016],["19040",175,169,"15",6,0.016],["19050",178,173,"12",5,0.188],["19060",181,177,"9",4,0.125],["19070",183,179,"7",4,0.047],["19080",185,180,"5",5,0.188],["19090",187,183,"3",4,0.031],["20020",168,161,"32",7,0.219],["20030",178,172,"22",6,0.047],["20040",184,180,"16",4,0.078],["20050",188,184,"12",4,0.047],["20060",190,188,"10",2,0.016],["20070",193,190,"7",3,0.016],["20080",195,190,"5",5,0.016],["20090",196,195,"4",1,0.016]];
+const RESULTS_MEB_SEED = [["10020",75,71,"ispatli",34.59,34.62],["10030",83,78,"ispatli",2.54,2.57],["10040",87,82,"ispatli",1.24,1.27],["10050",91,85,"ispatli",1.42,1.45],["10060",92,90,"ispatli",0.84,0.86],["10070",94,91,"ispatli",1.02,1.05],["10080",96,92,"ispatli",0.9,0.93],["10090",97,94,"ispatli",1.93,1.95],["11020",85,82,"ispatli",229.77,229.81],["11030",93,86,"ispatli",5.44,5.47],["11040",97,93,"ispatli",1.54,1.57],["11050",100,96,"ispatli",1.04,1.07],["11060",102,100,"ispatli",1.11,1.14],["11070",104,100,"ispatli",1.21,1.24],["11080",106,101,"ispatli",1.14,1.17],["11090",107,104,"ispatli",2.41,2.45],["12020",94,88,"ISPATSIZ",299.11,299.15],["12030",102,97,"ispatli",14.35,14.38],["12040",106,101,"ispatli",1.81,1.84],["12050",110,105,"ispatli",1.67,1.7],["12060",112,108,"ispatli",1.62,1.65],["12070",114,108,"ispatli",1.51,1.54],["12080",115,111,"ispatli",1.23,1.26],["12090",117,113,"ispatli",2.96,2.99],["13020",103,96,"ISPATSIZ",299.41,299.45],["13030",112,106,"ispatli",45.72,45.75],["13040",116,112,"ispatli",2.54,2.57],["13050",120,115,"ispatli",1.9,1.93],["13060",122,118,"ispatli",1.52,1.55],["13070",124,118,"ispatli",1.77,1.81],["13080",125,123,"ispatli",1.43,1.47],["13090",127,124,"ispatli",4.04,4.07],["14020",112,105,"ISPATSIZ",299.64,299.68],["14030",121,115,"ispatli",75.24,75.28],["14040",126,121,"ispatli",3.64,3.67],["14050",129,127,"ispatli",1.56,1.59],["14060",132,128,"ispatli",2.05,2.08],["14070",134,128,"ispatli",1.94,1.97],["14080",135,133,"ispatli",1.8,1.83],["14090",137,133,"ispatli",1.7,1.73],["15020",123,117,"ISPATSIZ",299.63,299.67],["15030",131,126,"ispatli",222.11,222.15],["15040",136,131,"ispatli",5.77,5.8],["15050",139,135,"ispatli",1.97,2],["15060",142,137,"ispatli",2.47,2.51],["15070",143,140,"ispatli",1.35,1.38],["15080",145,140,"ispatli",1.96,1.99],["15090",147,143,"ispatli",6.28,6.31],["16020",131,123,"ISPATSIZ",299.68,299.72],["16030",141,134,"ISPATSIZ",299.81,299.84],["16040",145,141,"ispatli",7.45,7.49],["16050",149,145,"ispatli",2.75,2.78],["16060",151,146,"ispatli",2.91,2.94],["16070",154,147,"ispatli",3.21,3.24],["16080",155,151,"ispatli",2.04,2.08],["16090",157,153,"ispatli",2.25,2.28],["17020",141,134,"ISPATSIZ",299.08,299.12],["17030",150,144,"ISPATSIZ",299.79,299.83],["17040",155,151,"ispatli",14.91,14.94],["17050",158,154,"ispatli",2.37,2.4],["17060",161,157,"ispatli",2.23,2.26],["17070",163,160,"ispatli",2.72,2.75],["17080",165,160,"ispatli",2.5,2.53],["17090",166,164,"ispatli",2.38,2.42],["18020",149,143,"ISPATSIZ",299.64,299.68],["18030",159,153,"ISPATSIZ",299.8,299.85],["18040",165,161,"ispatli",29.87,29.9],["18050",169,163,"ispatli",4.31,4.35],["18060",171,166,"ispatli",3.31,3.34],["18070",173,169,"ispatli",3.26,3.3],["18080",175,170,"ispatli",2.79,2.82],["18090",176,174,"ispatli",2.73,2.76],["19020",160,151,"ISPATSIZ",299.45,299.49],["19030",169,163,"ISPATSIZ",299.81,299.85],["19040",175,170,"ispatli",47.85,47.89],["19050",178,175,"ispatli",3.75,3.79],["19060",181,177,"ispatli",3.36,3.39],["19070",183,180,"ispatli",3.16,3.19],["19080",185,180,"ispatli",2.73,2.76],["19090",187,182,"ispatli",3.1,3.13],["20020",168,163,"ISPATSIZ",299.77,299.8],["20030",179,174,"ISPATSIZ",299.82,299.85],["20040",184,179,"ispatli",56.97,57],["20050",188,183,"ispatli",5.73,5.77],["20060",191,187,"ispatli",4.02,4.06],["20070",193,190,"ispatli",3.58,3.61],["20080",195,190,"ispatli",3.26,3.29],["20090",197,192,"ispatli",3.99,4.02]];
 const ILS = { bench: RESULTS_BENCH_ILS, meb: RESULTS_MEB_ILS };
+const SEED = { bench: [], meb: RESULTS_MEB_SEED };
 const DATA = { bench: RESULTS, meb: RESULTS_MEB };
 let method = "exact";
 let dataset = "bench";
@@ -548,9 +552,15 @@ const I18N = {
     done: p => `Sonuç: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. ${p.S.join(", ")} parçalanınca ağ {1, 2, 6} ve {3, 4, 5} diye ikiye ayrılıyor.`,
     t_h: "Güncel testler",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 çekirdek · üretilen graflar ${b}/88, MEBtest ${m}/88 dosya`,
-    method_aria: "Çözüm yöntemi", mt_exact: "Kesin çözücü · 16 çekirdek", mt_ils: "Sezgisel ILS · tek çekirdek",
+    method_aria: "Çözüm yöntemi", mt_exact: "Kesin çözücü · 16 çekirdek", mt_ils: "Sezgisel ILS · tek çekirdek", mt_seed: "Kesin, ILS başlangıçlı · 16 çekirdek",
     mt_ils_na: "Bu graf setinde henüz koşulmadı",
     exact_sum: (k, p) => `${k} dosya koşuldu, <b>${p}</b> tanesinde optimallik ispatlandı.`,
+    seed_sum: (k, p, u, b) => `${k} dosya koşuldu, <b>${p}</b> tanesinde optimallik ispatlandı. İspatlanamayan ${u} dosyanın <b>${b}</b> tanesinde ILS'siz kesin çözücüden daha iyi çözüm yazdı.`,
+    seed_title: "kesin çözücü, ILS başlangıçlı",
+    notes_seed: `<p>Hücre: <b>Z/X</b> ve programın ölçtüğü süre (ILS dahil).</p><p><b class="mk">[?]</b> 300 sn sınırında ispatlanamadı: yazılan çözüm geçerli ama optimal olduğu bilinmiyor.</p><p><b class="mk">[+]</b> ILS'siz kesin çözücünün aynı sürede bulduğundan daha iyi.</p>
+      <p><b>Yöntem:</b> <code>final/parcalar_baslangic_degerli.c</code>. Kesin çözücüyle aynı arama; tek fark, aramadan önce sezgisel ILS'nin çalışması (tohum 1, en çok 10 sn) ve bulduğu çözümün başlangıç değeri olması. Başlangıç yalnızca geçerli bir çözümdür; optimallik yine aramayla ispatlanır.</p>
+      <p><b>Sonuç:</b> ILS'nin kesin çözücüden daha iyi bulduğu 6 seyrek dosyanın hepsinde açık kapandı. Arama hiçbir dosyada ILS'nin başlangıcını geçemedi: ispatlı 74 dosyada ILS zaten optimumla başlamıştı. İspatlı dosyaların toplam süresi aynı kaldı (940 sn'ye karşı 935 sn): zor dosyalar kısaldı (19040: 122.8 → 47.9 sn, 18040: 58.6 → 29.9 sn), kolay dosyalara ILS dosya başına ortalama 2.3 sn ekledi.</p>
+      <p>Ayarlar: dosya başına 300 sn (<code>-t 300</code>, ILS dahil), dosyalar sırayla, aralarında 10 sn bekleme. Bütün çıktılar <code>tools/verify.py</code> ile kontrol edildi.</p>`,
     ils_sum: (m, p, w, z) => `Kesin çözücünün ispatladığı <b>${p}</b> dosyanın <b>${m}</b> tanesinde aynı Z ve X'i buldu${z ? `, <b>${z}</b> tanesinde Z doğru ama X fazla` : ""}; her çözüme en geç <b>${w.toFixed(2)} sn</b>'de ulaştı.`,
     ils_title: "sezgisel ILS, süre = en iyi çözüme ulaşma",
     notes_ils: `<p>Hücre: <b>Z/X</b> ve sezgisel çözücünün en iyi çözümünü bulduğu an (işlemci süresi).</p><p><b class="mk">[✓]</b> kesin çözücünün ispatlı optimumuyla aynı.</p><p><b class="mk">[≠]</b> farklı. Bench'teki 19040'ta olduğu gibi Z doğru olup X fazla çıkabilir: sezgisel çözücü aynı Z'yi daha az bilgisayar parçalayarak veren çözümü kaçırabilir.</p><p><b class="mk">[?]</b> karşılaştırılacak ispatlı sonuç yok: ya kesin çözücü bu dosyayı koşmadı ya da süre sınırında ispatlayamadı.</p>
@@ -559,10 +569,10 @@ const I18N = {
     dtabs_aria: "Test grafları", dtab_bench: "Üretilen graflar (data/bench)", dtab_meb: "MEBtest (hocanın grafları)",
     env: `<dt>İşlemci</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 fiziksel çekirdek, 16 mantıksal (SMT)</span></dd>
       <dt>Koşu</dt><dd>Kesin çözücü: <b>16 çekirdek</b>, 16 iş parçacığı (<code>OMP_NUM_THREADS=16</code>). Sezgisel ILS: tek iş parçacığı, 8 dosya aynı anda.</dd>
-      <dt>Sınır</dt><dd>Kesin çözücü: dosya başına 600 sn (<code>-t 600</code>), dosyalar sırayla; MEBtest'in en seyrek 14 dosyası 300 sn (<code>-t 300</code>), aralarında 10 sn bekleme. Sezgisel ILS: dosya başına 10 sn işlemci süresi (<code>-t 10</code>).</dd>
+      <dt>Sınır</dt><dd>Kesin çözücü: dosya başına 600 sn (<code>-t 600</code>), dosyalar sırayla; MEBtest'in en seyrek 14 dosyası 300 sn (<code>-t 300</code>), aralarında 10 sn bekleme. ILS başlangıçlı kesin çözücü: dosya başına 300 sn. Sezgisel ILS: dosya başına 10 sn işlemci süresi (<code>-t 10</code>).</dd>
       <dt>Sistem</dt><dd>Windows 10 Pro</dd>
       <dt>Derleyici</dt><dd>GCC 16.2.0 (WinLibs, MinGW-w64, UCRT)</dd>
-      <dt>Tarih</dt><dd>14 Ekim 2026</dd>`,
+      <dt>Tarih</dt><dd>14–15 Ekim 2026</dd>`,
     flags: `<li><code>-O2</code> standart optimizasyon seviyesi. Bu kodda <code>-O3</code> ek hız getirmedi (34.4 sn'ye karşı 34.5 sn).</li>
       <li><code>-march=native</code> Zen 4'e özel komutlar: POPCNT, BMI, AVX-512. Tek çekirdekte düz <code>-O2</code>'ye göre yaklaşık 1.6 kat hızlı.</li>
       <li><code>-Wa,-muse-unaligned-vector-move</code> Windows'taki MinGW'de <code>-march=native</code> ile oluşan AVX stack hizalama çökmesini (GCC bug 54412) önler.</li>
@@ -652,9 +662,15 @@ const I18N = {
     done: p => `Result: <b>Z = ${p.Z}, X = ${p.X}</b>, S = ${fmt(p.S)}. Wiping ${p.S.join(", ")} splits the network into {1, 2, 6} and {3, 4, 5}.`,
     t_h: "Current tests",
     sum: (b, m) => `AMD Ryzen 7 7800X3D · 16 cores · generated graphs ${b}/88, MEBtest ${m}/88 files`,
-    method_aria: "Solution method", mt_exact: "Exact solver · 16 cores", mt_ils: "ILS heuristic · single core",
+    method_aria: "Solution method", mt_exact: "Exact solver · 16 cores", mt_ils: "ILS heuristic · single core", mt_seed: "Exact, ILS start · 16 cores",
     mt_ils_na: "Not run on this graph set yet",
     exact_sum: (k, p) => `${k} files run, optimality proven for <b>${p}</b>.`,
+    seed_sum: (k, p, u, b) => `${k} files run, optimality proven for <b>${p}</b>. On <b>${b}</b> of the ${u} unproven files it wrote a better answer than the exact solver without ILS.`,
+    seed_title: "exact solver, started from ILS",
+    notes_seed: `<p>Cell: <b>Z/X</b> and the time measured by the program (ILS included).</p><p><b class="mk">[?]</b> not proven within the 300 s limit: the answer written is valid, but whether it is optimal is unknown.</p><p><b class="mk">[+]</b> better than what the exact solver without ILS found in the same time.</p>
+      <p><b>Method:</b> <code>final/parcalar_baslangic_degerli.c</code>. The same search as the exact solver; the only difference is that the ILS heuristic runs first (seed 1, at most 10 s) and its answer becomes the starting value. The start is only a valid solution; optimality is still proven by the search.</p>
+      <p><b>Result:</b> on all 6 sparse files where ILS had beaten the exact solver, the gap closed. The search did not improve on the ILS start on any file: on the 74 proven files ILS had already started at the optimum. Total time on the proven files stayed the same (940 s vs 935 s): hard files got faster (19040: 122.8 → 47.9 s, 18040: 58.6 → 29.9 s), and ILS added 2.3 s per file on average to the easy ones.</p>
+      <p>Settings: 300 s per file (<code>-t 300</code>, ILS included), files one at a time with a 10 s pause between them. Every output was checked with <code>tools/verify.py</code>.</p>`,
     ils_sum: (m, p, w, z) => `Matched Z and X on <b>${m}</b> of the <b>${p}</b> files the exact solver proved optimal${z ? `; on <b>${z}</b> the Z was right but X was larger` : ""}; every answer was reached within <b>${w.toFixed(2)} s</b>.`,
     ils_title: "ILS heuristic, time = time to best answer",
     notes_ils: `<p>Cell: <b>Z/X</b> and the moment the heuristic found its best answer (CPU time).</p><p><b class="mk">[✓]</b> same as the exact solver's proven optimum.</p><p><b class="mk">[≠]</b> different. As on bench 19040, Z can be right while X is larger: the heuristic can miss the answer that reaches the same Z with fewer wiped computers.</p><p><b class="mk">[?]</b> no proven result to compare with: the exact solver either did not run the file or could not prove it within its time limit.</p>
@@ -663,10 +679,10 @@ const I18N = {
     dtabs_aria: "Test graphs", dtab_bench: "Generated graphs (data/bench)", dtab_meb: "MEBtest (instructor's graphs)",
     env: `<dt>CPU</dt><dd>AMD Ryzen 7 7800X3D 8-Core Processor<br><span class="sub">8 physical cores, 16 logical (SMT)</span></dd>
       <dt>Run</dt><dd>Exact solver: <b>16 cores</b>, 16 threads (<code>OMP_NUM_THREADS=16</code>). ILS heuristic: single thread, 8 files at a time.</dd>
-      <dt>Limit</dt><dd>Exact solver: 600 s per file (<code>-t 600</code>), files one at a time; the 14 sparsest MEBtest files 300 s (<code>-t 300</code>), with a 10 s pause between them. ILS heuristic: 10 s of CPU time per file (<code>-t 10</code>).</dd>
+      <dt>Limit</dt><dd>Exact solver: 600 s per file (<code>-t 600</code>), files one at a time; the 14 sparsest MEBtest files 300 s (<code>-t 300</code>), with a 10 s pause between them. Exact solver started from ILS: 300 s per file. ILS heuristic: 10 s of CPU time per file (<code>-t 10</code>).</dd>
       <dt>System</dt><dd>Windows 10 Pro</dd>
       <dt>Compiler</dt><dd>GCC 16.2.0 (WinLibs, MinGW-w64, UCRT)</dd>
-      <dt>Date</dt><dd>14 October 2026</dd>`,
+      <dt>Date</dt><dd>14–15 October 2026</dd>`,
     flags: `<li><code>-O2</code> standard optimisation level. <code>-O3</code> gave no extra speed on this code (34.4 s vs 34.5 s).</li>
       <li><code>-march=native</code> Zen 4 instructions: POPCNT, BMI, AVX-512. About 1.6× faster than plain <code>-O2</code> on a single core.</li>
       <li><code>-Wa,-muse-unaligned-vector-move</code> avoids the AVX stack-alignment crash that <code>-march=native</code> causes with MinGW on Windows (GCC bug 54412).</li>
@@ -1035,13 +1051,14 @@ for (const k of ["seri", "paralel"]) {
 /* ---------------- results grid ---------------- */
 function renderGrid() {
   if (!ILS[dataset].length && method === "ils") method = "exact";
-  const ils = method === "ils";
-  const rows = ils ? ILS[dataset] : DATA[dataset];
+  if (!SEED[dataset].length && method === "seed") method = "exact";
+  const ils = method === "ils", seed = method === "seed";
+  const rows = ils ? ILS[dataset] : seed ? SEED[dataset] : DATA[dataset];
   const exact = {}; for (const r of DATA[dataset]) exact[r[0]] = r;
   const by = {}; for (const r of rows) by[r[0]] = r;
   const pcts = [20, 30, 40, 50, 60, 70, 80, 90];
   const lo = Math.log10(0.04), hi = Math.log10(240);
-  let nProven = 0, nMatch = 0, nZonly = 0, worst = 0;
+  let nProven = 0, nMatch = 0, nZonly = 0, worst = 0, nBetter = 0;
   let html = `<thead><tr><th scope="col">n</th>${pcts.map(p => `<th scope="col">%${p}</th>`).join("")}</tr></thead><tbody>`;
   for (let n = 100; n <= 200; n += 10) {
     html += `<tr><th scope="row">${n}</th>`;
@@ -1057,6 +1074,11 @@ function renderGrid() {
         if (e && e[3] === "ispatli") { nProven++; if (e[1] === r[1] && e[2] === r[2]) { nMatch++; mark = " ✓"; } else { if (e[1] === r[1]) nZonly++; mark = " ≠"; miss = true; } }
         else mark = " ?";
         title = `${k}.txt · ${t("ils_title")}`;
+      } else if (seed) {
+        const e = exact[k];
+        mark = r[3] === "ispatli" ? "" : " ?";
+        if (e && (r[1] < e[1] || (r[1] === e[1] && r[2] < e[2]))) { mark += " +"; nBetter++; }
+        title = `${k}.txt · ${t("seed_title")} · ${r[3] === "ispatli" ? t("proven") : t("unproven")}`;
       } else {
         mark = r[3] === "ispatli" ? "" : " ?";
         title = `${k}.txt · ${r[3] === "ispatli" ? t("proven") : t("unproven")}`;
@@ -1067,9 +1089,11 @@ function renderGrid() {
   }
   document.getElementById("grid").innerHTML = html + "</tbody>";
   document.getElementById("sum-note").textContent = t("sum")(RESULTS.length, RESULTS_MEB.length);
+  const nP = rows.filter(r => r[3] === "ispatli").length;
   document.getElementById("method-sum").innerHTML = ils ? t("ils_sum")(nMatch, nProven, worst, nZonly)
-    : t("exact_sum")(rows.length, rows.filter(r => r[3] === "ispatli").length);
-  document.getElementById("notes").innerHTML = ils ? t("notes_ils") : t("notes_common") + t("notes_" + dataset);
+    : seed ? t("seed_sum")(rows.length, nP, rows.length - nP, nBetter)
+    : t("exact_sum")(rows.length, nP);
+  document.getElementById("notes").innerHTML = ils ? t("notes_ils") : seed ? t("notes_seed") : t("notes_common") + t("notes_" + dataset);
   for (const k of ["bench", "meb"]) {
     const b = document.getElementById("dtab-" + k), on = k === dataset;
     b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
@@ -1077,12 +1101,17 @@ function renderGrid() {
   const bi = document.getElementById("mt-ils");
   bi.disabled = !ILS[dataset].length;
   bi.title = bi.disabled ? t("mt_ils_na") : "";
-  document.getElementById("mt-exact").setAttribute("aria-pressed", !ils);
+  const bs = document.getElementById("mt-seed");
+  bs.disabled = !SEED[dataset].length;
+  bs.title = bs.disabled ? t("mt_ils_na") : "";
+  document.getElementById("mt-exact").setAttribute("aria-pressed", !ils && !seed);
   bi.setAttribute("aria-pressed", ils);
+  bs.setAttribute("aria-pressed", seed);
 }
 renderGrid();
 document.getElementById("mt-exact").addEventListener("click", () => { method = "exact"; renderGrid(); });
 document.getElementById("mt-ils").addEventListener("click", () => { method = "ils"; renderGrid(); });
+document.getElementById("mt-seed").addEventListener("click", () => { method = "seed"; renderGrid(); });
 for (const k of ["bench", "meb"]) {
   const b = document.getElementById("dtab-" + k);
   b.addEventListener("click", () => { dataset = k; renderGrid(); });

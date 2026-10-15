@@ -31,6 +31,7 @@ Results are stored as `results/<graph set>/<machine>/<method>/<setting>/`. Each 
 | `data/bench` | AMD Ryzen 7 7800X3D | ILS heuristic, 1 thread, 10 s | no proofs; matches 73 of 74 proven optima (19040: right Z, X one too large), every answer within 0.33 s | [`results/bench/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn`](results/bench/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn/SONUCLAR.md) |
 | `data/MEBtest` | AMD Ryzen 7 7800X3D | exact, 16 threads, 600 s limit (300 s for the 14 sparsest) | 74 / 88 proven; the 14 sparsest (20% from n = 120, 30% from n = 160) not proven in 300 s | [`results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek`](results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar/16-cekirdek/SONUCLAR.md) |
 | `data/MEBtest` | AMD Ryzen 7 7800X3D | ILS heuristic, 1 thread, 10 s | no proofs; matches all 74 proven optima, and on the 14 unproven files equals the exact solver on 8 and beats it on 6; every answer within 1.05 s | [`results/MEBtest/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn`](results/MEBtest/AMD_Ryzen_7_7800X3D/sezgisel_ILS/tek-cekirdek-10sn/SONUCLAR.md) |
+| `data/MEBtest` | AMD Ryzen 7 7800X3D | exact started from the ILS answer, 16 threads, 300 s limit (ILS included) | 74 / 88 proven (same files); on the 6 files where ILS beat the plain exact solver, it now writes the ILS answer; the search never improved on the ILS start | [`results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar_baslangic_degerli/16-cekirdek`](results/MEBtest/AMD_Ryzen_7_7800X3D/parcalar_baslangic_degerli/16-cekirdek/SONUCLAR.md) |
 
 The 7800X3D runs used GCC 16.2.0 (WinLibs, MinGW-w64) with this command:
 
@@ -59,7 +60,7 @@ The output is `Z=<z>  X=<x>`, followed by `S: ...` (the wiped computers, numbere
 
 | Path | Contents |
 |---|---|
-| `final/` | the exact solver |
+| `final/` | the exact solver (`parcalar.c`), and the same solver started from the ILS heuristic's answer (`parcalar_baslangic_degerli.c`) |
 | `alternatif_cozuculer/` | alternative solvers (`bnb`, `rds`, …) and a heuristic, each with NOTES |
 | `data/bench/` | 88 random test graphs `{n}{density}.txt`, generated for this study |
 | `data/MEBtest/` | the instructor's 88 test graphs (2014), same names; nested by density |

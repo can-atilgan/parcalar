@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=191 X=189, ILS Z=191 X=187 (3.89 sn) -> Z=191 X=187
+Kontrol: |S|=187, kalan en buyuk bilesen Y=4, X+Y=191 -> UYGUN (tutarli)
+Optimallik ispatlandi.
+Sure: 4.02 sn (16 is parcacigi)

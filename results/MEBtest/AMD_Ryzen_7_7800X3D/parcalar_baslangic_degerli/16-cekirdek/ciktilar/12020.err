@@ -1,0 +1,4 @@
+Baslangic: yerel arama Z=94 X=88, ILS Z=94 X=88 (1.35 sn) -> Z=94 X=88
+Kontrol: |S|=88, kalan en buyuk bilesen Y=6, X+Y=94 -> UYGUN (tutarli)
+ZAMAN SINIRI (-t 300 sn) doldu: yazilan cozum gecerli ama optimalligi ISPATLANMADI
+Sure: 299.11 sn (16 is parcacigi)
